@@ -4,12 +4,14 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import javafx.stage.*;
 import java.util.*;
 
 public class SabersmithyReforged extends Application {
 	// Scenes
 	Scene smithyMenuScene, forgeScene, galleryScene;
+	
 	// Import saber parts
 	Image anakinEmitter = new Image("/Saber Parts/AnakinEmitter.png");
 	Image anakinGuard = new Image("/Saber Parts/AnakinGuard.png");
@@ -86,6 +88,16 @@ public class SabersmithyReforged extends Application {
 	Image orig1Silver = new Image("/Colored Emitters/OrigEmitter1/Orig1Silver.png");
 	Image orig1Yellow = new Image("/Colored Emitters/OrigEmitter1/Orig1Yellow.png");
 	
+	// Import crystals
+	Image blackCrystal = new Image("/Crystals/BlackCrystal.png");
+	Image blueCrystal = new Image("/Crystals/BlueCrystal.png");
+	Image greenCrystal = new Image("/Crystals/GreenCrystal.png");
+	Image orangeCrystal = new Image("/Crystals/OrangeCrystal.png");
+	Image purpleCrystal = new Image("/Crystals/PurpleCrystal.png");
+	Image redCrystal = new Image("/Crystals/RedCrystal.png");
+	Image silverCrystal = new Image("/Crystals/SilverCrystal.png");
+	Image yellowCrystal = new Image("/Crystals/YellowCrystal.png");
+	
 	// Arraylist for storing all saber objects
 	ArrayList<Saber> allSabers = new ArrayList<>();
 	
@@ -110,6 +122,7 @@ public class SabersmithyReforged extends Application {
 		allSabers.add(lukeSaber);
 		allSabers.add(vaderSaber);
 		
+		/* MAIN MENU */
 		FlowPane smithyFlowPane = new FlowPane(Orientation.VERTICAL);
 		smithyFlowPane.setStyle("-fx-background-color: black");
 		smithyFlowPane.setAlignment(Pos.BASELINE_CENTER);
@@ -134,20 +147,334 @@ public class SabersmithyReforged extends Application {
 		btGallery.setPrefSize(150, 100);
 		btGallery.setOnAction(e -> primaryStage.setScene(galleryScene));
 		
-		HBox buttonBox = new HBox(200);
-		buttonBox.setAlignment(Pos.CENTER);
-		buttonBox.getChildren().addAll(btForge, btGallery);
+		HBox smithyButtonBox = new HBox(200);
+		smithyButtonBox.setAlignment(Pos.CENTER);
+		smithyButtonBox.getChildren().addAll(btForge, btGallery);
 		
-		smithyFlowPane.getChildren().addAll(smithyTitleBox, buttonBox);
+		smithyFlowPane.getChildren().addAll(smithyTitleBox, smithyButtonBox);
 		
 		// Set primary stage
 		smithyMenuScene = new Scene(smithyFlowPane, 1280, 720);
 		primaryStage.setScene(smithyMenuScene);
 		primaryStage.show();
+		
+		
+		/* GALLERY */
+		BorderPane galleryBorderPane = new BorderPane();
+		FlowPane galleryFlowPane = new FlowPane(100, 100);
+		galleryFlowPane.setPadding(new Insets(50, 150, 50, 150));
+		
+		// Place galleryFlowPane in a ScrollPane
+		ScrollPane galleryScrollPane = new ScrollPane();
+		galleryScrollPane.setContent(galleryFlowPane);
+		galleryScrollPane.hbarPolicyProperty().setValue(
+				ScrollPane.ScrollBarPolicy.NEVER);
+		galleryScrollPane.setFitToWidth(true);
+		galleryScrollPane.setFitToHeight(true);
+		
+		HBox galleryTitleBox = new HBox();
+		galleryTitleBox.setAlignment(Pos.CENTER);
+		Text galleryTitle = new Text("Gallery");
+		galleryTitleBox.getChildren().add(galleryTitle);
+		
+		// Navigate back to main menu
+		Button btBackGallery = new Button("<--");
+		btBackGallery.setOnAction(e -> primaryStage.setScene(smithyMenuScene));
+		HBox galleryButtonBox = new HBox();
+		galleryButtonBox.setAlignment(Pos.TOP_LEFT);
+		galleryButtonBox.getChildren().add(btBackGallery);
+		
+		// Display all sabers on galleryFlowPane
+		for (int i = 0; i < allSabers.size(); i++) {
+			VBox saberBox = new VBox();
+			ImageView emitter = new ImageView(allSabers.get(i).getEmitter());
+			ImageView guard = new ImageView(allSabers.get(i).getGuard());
+			ImageView bladeSwitch = new ImageView(allSabers.get(i).getBladeSwitch());
+			ImageView pommel = new ImageView(allSabers.get(i).getPommel());
+			saberBox.getChildren().addAll(emitter, guard, bladeSwitch, pommel);
+			
+			HBox formatBox = new HBox(20);
+			formatBox.getChildren().add(saberBox);
+			formatBox.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;");
+			formatBox.setPrefWidth(200);
+			formatBox.setPrefHeight(200);
+			Label saberLabel = new Label(allSabers.get(i).getName(), formatBox);
+			saberLabel.setContentDisplay(ContentDisplay.TOP);
+			
+			if (allSabers.get(i).getIsDefault() == true) {
+				ComboBox<String> cbo = new ComboBox<>();
+				cbo.getItems().add("View");
+				formatBox.getChildren().add(cbo);
+			}
+			else {
+				ComboBox<String> cbo = new ComboBox<>();
+				cbo.getItems().addAll("View", "Edit", "Delete");
+				formatBox.getChildren().add(cbo);
+			}
+			
+			galleryFlowPane.getChildren().addAll(formatBox, saberLabel);
+		}
+		
+		galleryBorderPane.setTop(galleryTitleBox);
+		galleryBorderPane.setLeft(galleryButtonBox);
+		galleryBorderPane.setCenter(galleryScrollPane);
+		
+		// Create scene
+		galleryScene = new Scene(galleryBorderPane, 1280, 720);
+		
+		
+		/* FORGE */
+		BorderPane forgeBorderPane = new BorderPane();
+		
+		Label lblEmitter = new Label("Emitters");
+		lblEmitter.setContentDisplay(ContentDisplay.BOTTOM);
+		FlowPane emitterPane = new FlowPane(5, 5, lblEmitter);
+		emitterPane.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;");
+		emitterPane.setPadding(new Insets(5, 5, 5, 5));
+		
+		Label lblGuard = new Label("Guards");
+		lblGuard.setContentDisplay(ContentDisplay.BOTTOM);
+		FlowPane guardPane = new FlowPane(5, 5, lblGuard);
+		guardPane.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;");
+		guardPane.setPadding(new Insets(5, 5, 5, 5));
+		
+		Label lblColor = new Label("Colors");
+		lblColor.setContentDisplay(ContentDisplay.BOTTOM);
+		FlowPane colorPane = new FlowPane(5, 5, lblColor);
+		colorPane.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;");
+		colorPane.setPadding(new Insets(5, 5, 5, 5));
+		
+		Label lblSwitch = new Label("Switches");
+		lblSwitch.setContentDisplay(ContentDisplay.BOTTOM);
+		FlowPane switchPane = new FlowPane(5, 5, lblSwitch);
+		switchPane.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;");
+		switchPane.setPadding(new Insets(5, 5, 5, 5));
+		
+		Label lblPommel = new Label("Pommels");
+		lblPommel.setContentDisplay(ContentDisplay.BOTTOM);
+		FlowPane pommelPane = new FlowPane(5, 5, lblPommel);
+		pommelPane.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;");
+		pommelPane.setPadding(new Insets(5, 5, 5, 5));
+		
+		VBox leftBox = new VBox(20);
+		leftBox.getChildren().addAll(emitterPane, guardPane);
+		VBox rightBox = new VBox(20);
+		rightBox.getChildren().addAll(colorPane, switchPane, pommelPane);
+		
+		Saber customSaber = new Saber();
+		
+		VBox customSaberBox = new VBox();
+		customSaberBox.setAlignment(Pos.BOTTOM_CENTER);
+		ImageView customEmitter = new ImageView(customSaber.getEmitter());
+		ImageView customGuard = new ImageView(customSaber.getGuard());
+		ImageView customSwitch = new ImageView(customSaber.getBladeSwitch());
+		ImageView customPommel = new ImageView(customSaber.getPommel());
+		customSaberBox.getChildren().addAll(customEmitter, customGuard, 
+				customSwitch, customPommel);
+				
+		HBox bottomBox = new HBox(100);
+		bottomBox.setAlignment(Pos.CENTER);
+				
+		HBox nameBox = new HBox();
+		nameBox.setAlignment(Pos.CENTER);
+		TextField name = new TextField(customSaber.getName());
+		name.setEditable(true);
+		name.setAlignment(Pos.BASELINE_CENTER);
+		name.setOnAction(e -> customSaber.setName(name.getText()));
+		nameBox.getChildren().add(name);
+				
+		HBox forgeButtonBox = new HBox(20);
+		forgeButtonBox.setAlignment(Pos.BOTTOM_LEFT);
+		
+		// Save customSaber to gallery
+		Button btSave = new Button("Save");
+		btSave.setOnAction(e -> {
+			addCustomSaber(customSaber, allSabers, galleryFlowPane, primaryStage);
+		});
+		
+		// Return to smithyMenuScene without saving customSaber
+		Button btDiscard = new Button("Discard");
+		btDiscard.setOnAction(e -> {
+			primaryStage.setScene(smithyMenuScene);
+		});
+			
+		// Activate/Deactivate blade
+		Button btTest = new Button("Toggle Blade");
+		btTest.setOnAction(e -> {
+				// ! TOGGLE COLORED EMITTER !
+		});
+		
+		forgeButtonBox.getChildren().addAll(btSave, btDiscard, btTest);		
+		bottomBox.getChildren().addAll(forgeButtonBox, nameBox);
+		
+		for (int i = 0; i < allSabers.size(); i++) {
+			// Add emitters to emitterPane
+			Image emitterImage = allSabers.get(i).getEmitter();
+			ImageView emitterView = new ImageView(emitterImage);
+			emitterView.setFitHeight(50);
+			emitterView.setFitWidth(50);
+			Button btEmitter = new Button();
+			btEmitter.setGraphic(emitterView);
+			btEmitter.setOnAction(e -> {
+				changeEmitter(customSaber, customSaberBox, emitterImage);
+			});
+			emitterPane.getChildren().add(btEmitter);
+			
+			// Add guards to guardPane
+			Image guardImage = allSabers.get(i).getGuard();
+			ImageView guardView = new ImageView(guardImage);
+			guardView.setFitHeight(50);
+			guardView.setFitWidth(50);
+			Button btGuard = new Button();
+			btGuard.setGraphic(guardView);
+			btGuard.setOnAction(e -> {
+				changeGuard(customSaber, customSaberBox, guardImage);
+			});
+			guardPane.getChildren().add(btGuard);
+			
+			// Add switches to switchPane
+			Image switchImage = allSabers.get(i).getBladeSwitch();
+			ImageView switchView = new ImageView(switchImage);
+			switchView.setFitHeight(50);
+			switchView.setFitWidth(50);
+			Button btSwitch = new Button();
+			btSwitch.setGraphic(switchView);
+			btSwitch.setOnAction(e -> {
+				changeSwitch(customSaber, customSaberBox, switchImage);
+			});
+			switchPane.getChildren().add(btSwitch);
+			
+			// Add pommels to pommelPane
+			Image pommelImage = allSabers.get(i).getPommel();
+			ImageView pommelView = new ImageView(pommelImage);
+			pommelView.setFitHeight(50);
+			pommelView.setFitWidth(50);
+			Button btPommel = new Button();
+			btPommel.setGraphic(pommelView);
+			btPommel.setOnAction(e -> {
+				changePommel(customSaber, customSaberBox, pommelImage);
+			});
+			pommelPane.getChildren().add(btPommel);
+		}
+		
+		// Add crystals to colorPane
+		ImageView blackView = new ImageView(blackCrystal);
+		Button btBlack = new Button();
+		btBlack.setGraphic(blackView);
+		btBlack.setOnAction(e -> customSaber.setColor("Black"));
+		ImageView blueView = new ImageView(blueCrystal);
+		Button btBlue = new Button();
+		btBlue.setGraphic(blueView);
+		btBlue.setOnAction(e -> customSaber.setColor("Blue"));
+		ImageView greenView = new ImageView(greenCrystal);
+		Button btGreen = new Button();
+		btGreen.setGraphic(greenView);
+		btGreen.setOnAction(e -> customSaber.setColor("Green"));
+		ImageView orangeView = new ImageView(orangeCrystal);
+		Button btOrange = new Button();
+		btOrange.setGraphic(orangeView);
+		btOrange.setOnAction(e -> customSaber.setColor("Orange"));
+		ImageView purpleView = new ImageView(purpleCrystal);
+		Button btPurple = new Button();
+		btPurple.setGraphic(purpleView);
+		btPurple.setOnAction(e -> customSaber.setColor("Purple"));
+		ImageView redView = new ImageView(redCrystal);
+		Button btRed = new Button();
+		btRed.setGraphic(redView);
+		btRed.setOnAction(e -> customSaber.setColor("Red"));
+		ImageView silverView = new ImageView(silverCrystal);
+		Button btSilver = new Button();
+		btSilver.setGraphic(silverView);
+		btSilver.setOnAction(e -> customSaber.setColor("Silver"));
+		ImageView yellowView = new ImageView(yellowCrystal);
+		Button btYellow = new Button();
+		btYellow.setGraphic(yellowView);
+		btYellow.setOnAction(e -> customSaber.setColor("Yellow"));
+		
+		colorPane.getChildren().addAll(btBlack, btBlue, btGreen, 
+				btOrange, btPurple, btRed, btSilver, btYellow);
+		
+		forgeBorderPane.setLeft(leftBox);
+		forgeBorderPane.setRight(rightBox);
+		forgeBorderPane.setBottom(bottomBox);
+		forgeBorderPane.setCenter(customSaberBox);
+		
+		// Create scene
+		forgeScene = new Scene(forgeBorderPane, 1280, 720);
 	}
 	
 	// Main method
 	public static void main(String[] args) {
 		launch(args);
 	}
+	
+	// Adds a custom saber object to galleryFlowPane
+		public void addCustomSaber(Saber customSaber, ArrayList<Saber> allSabers, 
+				FlowPane galleryFlowPane, Stage primaryStage) {
+			// Add saber to list
+			allSabers.add(customSaber);
+			VBox saberBox = new VBox();
+			ImageView emitter = new ImageView(customSaber.getEmitter());
+			ImageView guard = new ImageView(customSaber.getGuard());
+			ImageView bladeSwitch = new ImageView(customSaber.getBladeSwitch());
+			ImageView pommel = new ImageView(customSaber.getPommel());
+			saberBox.getChildren().addAll(emitter, guard, bladeSwitch, pommel);
+			
+			HBox formatBox = new HBox();
+			formatBox.getChildren().add(saberBox);
+			formatBox.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;");
+			formatBox.setPrefWidth(200);
+			formatBox.setPrefHeight(200);
+			
+			Label saberLabel = new Label(customSaber.getName(), formatBox);
+			saberLabel.setContentDisplay(ContentDisplay.TOP);
+			
+			if (customSaber.getIsDefault() == true) {
+				ComboBox<String> cbo = new ComboBox<>();
+				cbo.getItems().add("View");
+				formatBox.getChildren().add(cbo);
+			}
+			else if (customSaber.getIsDefault() == false) {
+				ComboBox<String> cbo = new ComboBox<>();
+				cbo.getItems().addAll("View", "Edit", "Delete");
+				formatBox.getChildren().add(cbo);
+			}
+			
+			galleryFlowPane.getChildren().add(formatBox);
+			galleryFlowPane.getChildren().add(saberLabel);
+			
+			primaryStage.setScene(smithyMenuScene);
+		}
+		
+		// Change customSaber's emitter
+		public static void changeEmitter(Saber customSaber, VBox customSaberBox, 
+				Image newEmitter) {
+			customSaber.setEmitter(newEmitter);
+			ImageView newEmitterView = new ImageView(newEmitter);
+			customSaberBox.getChildren().set(0, newEmitterView);
+		}
+		
+		// Changes customSaber's guard
+		public static void changeGuard(Saber customSaber, VBox customSaberBox, 
+				Image newGuard) {
+			customSaber.setGuard(newGuard);
+			ImageView newGuardView = new ImageView(newGuard);
+			customSaberBox.getChildren().set(1, newGuardView);
+		}
+		
+		// Changes customSaber's switch
+		public static void changeSwitch(Saber customSaber, VBox customSaberBox, 
+				Image newBladeSwitch) {
+			customSaber.setBladeSwitch(newBladeSwitch);
+			ImageView newBladeSwitchView = new ImageView(newBladeSwitch);
+			customSaberBox.getChildren().set(2, newBladeSwitchView);
+		}
+		
+		// Changes customSaber's pommel
+		public static void changePommel(Saber customSaber, VBox customSaberBox, 
+				Image newPommel) {
+			customSaber.setPommel(newPommel);
+			ImageView newPommelView = new ImageView(newPommel);
+			customSaberBox.getChildren().set(3, newPommelView);
+		}
 } 
