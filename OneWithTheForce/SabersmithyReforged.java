@@ -12,81 +12,89 @@ public class SabersmithyReforged extends Application {
 	// Scenes
 	Scene smithyMenuScene, forgeScene, galleryScene;
 	
+	// Boolean for toggling saber
+	boolean saberIsOn = false;
+	
 	// Import saber parts
-	Image anakinEmitter = new Image("/Saber Parts/AnakinEmitter.png");
+	static Image anakinEmitter = new Image("/Saber Parts/AnakinEmitter.png");
 	Image anakinGuard = new Image("/Saber Parts/AnakinGuard.png");
 	Image anakinSwitch = new Image("/Saber Parts/AnakinSwitch.png");
 	Image anakinPommel = new Image("/Saber Parts/AnakinPommel.png");
-	Image ahsokaEmitter = new Image("/Saber Parts/AhsokaEmitter.png");
+	static Image ahsokaEmitter = new Image("/Saber Parts/AhsokaEmitter.png");
 	Image ahsokaGuard = new Image("/Saber Parts/AhsokaGuard.png");
 	Image ahsokaSwitch = new Image("/Saber Parts/AhsokaSwitch.png");
 	Image ahsokaPommel = new Image("/Saber Parts/AhsokaPommel.png");
-	Image kalEmitter = new Image("/Saber Parts/KalEmitter.png");
+	static Image kalEmitter = new Image("/Saber Parts/KalEmitter.png");
 	Image kalGuard = new Image("/Saber Parts/KalGuard.png");
 	Image kalSwitch = new Image("/Saber Parts/KalSwitch.png");
 	Image kalPommel = new Image("/Saber Parts/KalPommel.png");
-	Image lukeEmitter = new Image("/Saber Parts/LukeEmitter.png");
+	static Image lukeEmitter = new Image("/Saber Parts/LukeEmitter.png");
 	Image lukeGuard = new Image("/Saber Parts/LukeGuard.png");
 	Image lukeSwitch = new Image("/Saber Parts/LukeSwitch.png");
 	Image lukePommel = new Image("/Saber Parts/LukePommel.png");
-	Image vaderEmitter = new Image("/Saber Parts/VaderEmitter.png");
+	static Image vaderEmitter = new Image("/Saber Parts/VaderEmitter.png");
 	Image vaderGuard = new Image("/Saber Parts/VaderGuard.png");
 	Image vaderSwitch = new Image("/Saber Parts/VaderSwitch.png");
 	Image vaderPommel = new Image("/Saber Parts/VaderPommel.png");
-	Image origEmitter1 = new Image("/Saber Parts/OrigEmitter1.png");
-	Image origGuard1 = new Image("/Saber Parts/OrigGuard1.png");
-	Image origSwitch1 = new Image("/Saber Parts/OrigSwitch1.png");
-	Image origPommel1 = new Image("/Saber Parts/OrigPommel1.png");
+	static Image darkEmitter = new Image("/Saber Parts/DarkEmitter.png");
+	Image darkGuard = new Image("/Saber Parts/DarkGuard.png");
+	Image darkSwitch = new Image("/Saber Parts/DarkSwitch.png");
+	Image darkPommel = new Image("/Saber Parts/DarkPommel.png");
+	static Image orig1Emitter = new Image("/Saber Parts/OrigEmitter1.png");
+	Image orig1Guard = new Image("/Saber Parts/OrigGuard1.png");
+	Image orig1Switch = new Image("/Saber Parts/OrigSwitch1.png");
+	Image orig1Pommel = new Image("/Saber Parts/OrigPommel1.png");
 			
 	// Import colored emitters
-	Image anakinBlack = new Image("/Colored Emitters/AnakinEmitter/AnakinBlack.png");
-	Image anakinBlue = new Image("/Colored Emitters/AnakinEmitter/AnakinBlue.png");
-	Image anakinGreen = new Image("/Colored Emitters/AnakinEmitter/AnakinGreen.png");
-	Image anakinOrange = new Image("/Colored Emitters/AnakinEmitter/AnakinOrange.png");
-	Image anakinPurple = new Image("/Colored Emitters/AnakinEmitter/AnakinPurple.png");
-	Image anakinRed = new Image("/Colored Emitters/AnakinEmitter/AnakinRed.png");
-	Image anakinSilver = new Image("/Colored Emitters/AnakinEmitter/AnakinSilver.png");
-	Image anakinYellow = new Image("/Colored Emitters/AnakinEmitter/AnakinYellow.png");
-	Image ahsokaBlack = new Image("/Colored Emitters/AhsokaEmitter/AhsokaBlack.png");
-	Image ahsokaBlue = new Image("/Colored Emitters/AhsokaEmitter/AhsokaBlue.png");
-	Image ahsokaGreen = new Image("/Colored Emitters/AhsokaEmitter/AhsokaGreen.png");
-	Image ahsokaOrange = new Image("/Colored Emitters/AhsokaEmitter/AhsokaOrange.png");
-	Image ahsokaPurple = new Image("/Colored Emitters/AhsokaEmitter/AhsokaPurple.png");
-	Image ahsokaRed = new Image("/Colored Emitters/AhsokaEmitter/AhsokaRed.png");
-	Image ahsokaSilver = new Image("/Colored Emitters/AhsokaEmitter/AhsokaSilver.png");
-	Image ahsokaYellow = new Image("/Colored Emitters/AhsokaEmitter/AhsokaYellow.png");
-	Image kalBlack = new Image("/Colored Emitters/KalEmitter/KalBlack.png");
-	Image kalBlue = new Image("/Colored Emitters/KalEmitter/KalBlue.png");
-	Image kalGreen = new Image("/Colored Emitters/KalEmitter/KalGreen.png");
-	Image kalOrange = new Image("/Colored Emitters/KalEmitter/KalOrange.png");
-	Image kalPurple = new Image("/Colored Emitters/KalEmitter/KalPurple.png");
-	Image kalRed = new Image("/Colored Emitters/KalEmitter/KalRed.png");
-	Image kalSilver = new Image("/Colored Emitters/KalEmitter/KalSilver.png");
-	Image kalYellow = new Image("/Colored Emitters/KalEmitter/KalYellow.png");
-	Image lukeBlack = new Image("/Colored Emitters/LukeEmitter/LukeBlack.png");
-	Image lukeBlue = new Image("/Colored Emitters/LukeEmitter/LukeBlue.png");
-	Image lukeGreen = new Image("/Colored Emitters/LukeEmitter/LukeGreen.png");
-	Image lukeOrange = new Image("/Colored Emitters/LukeEmitter/LukeOrange.png");
-	Image lukePurple = new Image("/Colored Emitters/LukeEmitter/LukePurple.png");
-	Image lukeRed = new Image("/Colored Emitters/LukeEmitter/LukeRed.png");
-	Image lukeSilver = new Image("/Colored Emitters/LukeEmitter/LukeSilver.png");
-	Image lukeYellow = new Image("/Colored Emitters/LukeEmitter/LukeYellow.png");
-	Image vaderBlack = new Image("/Colored Emitters/VaderEmitter/VaderBlack.png");
-	Image vaderBlue = new Image("/Colored Emitters/VaderEmitter/VaderBlue.png");
-	Image vaderGreen = new Image("/Colored Emitters/VaderEmitter/VaderGreen.png");
-	Image vaderOrange = new Image("/Colored Emitters/VaderEmitter/VaderOrange.png");
-	Image vaderPurple = new Image("/Colored Emitters/VaderEmitter/VaderPurple.png");
-	Image vaderRed = new Image("/Colored Emitters/VaderEmitter/VaderRed.png");
-	Image vaderSilver = new Image("/Colored Emitters/VaderEmitter/VaderSilver.png");
-	Image vaderYellow = new Image("/Colored Emitters/VaderEmitter/VaderYellow.png");
-	Image orig1Black = new Image("/Colored Emitters/OrigEmitter1/Orig1Black.png");
-	Image orig1Blue = new Image("/Colored Emitters/OrigEmitter1/Orig1Blue.png");
-	Image orig1Green = new Image("/Colored Emitters/OrigEmitter1/Orig1Green.png");
-	Image orig1Orange = new Image("/Colored Emitters/OrigEmitter1/Orig1Orange.png");
-	Image orig1Purple = new Image("/Colored Emitters/OrigEmitter1/Orig1Purple.png");
-	Image orig1Red = new Image("/Colored Emitters/OrigEmitter1/Orig1Red.png");
-	Image orig1Silver = new Image("/Colored Emitters/OrigEmitter1/Orig1Silver.png");
-	Image orig1Yellow = new Image("/Colored Emitters/OrigEmitter1/Orig1Yellow.png");
+	static Image anakinBlack = new Image("/Colored Emitters/AnakinEmitter/AnakinBlack.png");
+	static Image anakinBlue = new Image("/Colored Emitters/AnakinEmitter/AnakinBlue.png");
+	static Image anakinGreen = new Image("/Colored Emitters/AnakinEmitter/AnakinGreen.png");
+	static Image anakinOrange = new Image("/Colored Emitters/AnakinEmitter/AnakinOrange.png");
+	static Image anakinPurple = new Image("/Colored Emitters/AnakinEmitter/AnakinPurple.png");
+	static Image anakinRed = new Image("/Colored Emitters/AnakinEmitter/AnakinRed.png");
+	static Image anakinSilver = new Image("/Colored Emitters/AnakinEmitter/AnakinSilver.png");
+	static Image anakinYellow = new Image("/Colored Emitters/AnakinEmitter/AnakinYellow.png");
+	static Image ahsokaBlack = new Image("/Colored Emitters/AhsokaEmitter/AhsokaBlack.png");
+	static Image ahsokaBlue = new Image("/Colored Emitters/AhsokaEmitter/AhsokaBlue.png");
+	static Image ahsokaGreen = new Image("/Colored Emitters/AhsokaEmitter/AhsokaGreen.png");
+	static Image ahsokaOrange = new Image("/Colored Emitters/AhsokaEmitter/AhsokaOrange.png");
+	static Image ahsokaPurple = new Image("/Colored Emitters/AhsokaEmitter/AhsokaPurple.png");
+	static Image ahsokaRed = new Image("/Colored Emitters/AhsokaEmitter/AhsokaRed.png");
+	static Image ahsokaSilver = new Image("/Colored Emitters/AhsokaEmitter/AhsokaSilver.png");
+	static Image ahsokaYellow = new Image("/Colored Emitters/AhsokaEmitter/AhsokaYellow.png");
+	static Image kalBlack = new Image("/Colored Emitters/KalEmitter/KalBlack.png");
+	static Image kalBlue = new Image("/Colored Emitters/KalEmitter/KalBlue.png");
+	static Image kalGreen = new Image("/Colored Emitters/KalEmitter/KalGreen.png");
+	static Image kalOrange = new Image("/Colored Emitters/KalEmitter/KalOrange.png");
+	static Image kalPurple = new Image("/Colored Emitters/KalEmitter/KalPurple.png");
+	static Image kalRed = new Image("/Colored Emitters/KalEmitter/KalRed.png");
+	static Image kalSilver = new Image("/Colored Emitters/KalEmitter/KalSilver.png");
+	static Image kalYellow = new Image("/Colored Emitters/KalEmitter/KalYellow.png");
+	static Image lukeBlack = new Image("/Colored Emitters/LukeEmitter/LukeBlack.png");
+	static Image lukeBlue = new Image("/Colored Emitters/LukeEmitter/LukeBlue.png");
+	static Image lukeGreen = new Image("/Colored Emitters/LukeEmitter/LukeGreen.png");
+	static Image lukeOrange = new Image("/Colored Emitters/LukeEmitter/LukeOrange.png");
+	static Image lukePurple = new Image("/Colored Emitters/LukeEmitter/LukePurple.png");
+	static Image lukeRed = new Image("/Colored Emitters/LukeEmitter/LukeRed.png");
+	static Image lukeSilver = new Image("/Colored Emitters/LukeEmitter/LukeSilver.png");
+	static Image lukeYellow = new Image("/Colored Emitters/LukeEmitter/LukeYellow.png");
+	static Image vaderBlack = new Image("/Colored Emitters/VaderEmitter/VaderBlack.png");
+	static Image vaderBlue = new Image("/Colored Emitters/VaderEmitter/VaderBlue.png");
+	static Image vaderGreen = new Image("/Colored Emitters/VaderEmitter/VaderGreen.png");
+	static Image vaderOrange = new Image("/Colored Emitters/VaderEmitter/VaderOrange.png");
+	static Image vaderPurple = new Image("/Colored Emitters/VaderEmitter/VaderPurple.png");
+	static Image vaderRed = new Image("/Colored Emitters/VaderEmitter/VaderRed.png");
+	static Image vaderSilver = new Image("/Colored Emitters/VaderEmitter/VaderSilver.png");
+	static Image vaderYellow = new Image("/Colored Emitters/VaderEmitter/VaderYellow.png");
+	static Image darkBlack = new Image("/Colored Emitters/DarkEmitter/DarkEmitterBlack.png");
+	static Image orig1Black = new Image("/Colored Emitters/OrigEmitter1/Orig1Black.png");
+	static Image orig1Blue = new Image("/Colored Emitters/OrigEmitter1/Orig1Blue.png");
+	static Image orig1Green = new Image("/Colored Emitters/OrigEmitter1/Orig1Green.png");
+	static Image orig1Orange = new Image("/Colored Emitters/OrigEmitter1/Orig1Orange.png");
+	static Image orig1Purple = new Image("/Colored Emitters/OrigEmitter1/Orig1Purple.png");
+	static Image orig1Red = new Image("/Colored Emitters/OrigEmitter1/Orig1Red.png");
+	static Image orig1Silver = new Image("/Colored Emitters/OrigEmitter1/Orig1Silver.png");
+	static Image orig1Yellow = new Image("/Colored Emitters/OrigEmitter1/Orig1Yellow.png");
 	
 	// Import crystals
 	Image blackCrystal = new Image("/Crystals/BlackCrystal.png");
@@ -111,7 +119,11 @@ public class SabersmithyReforged extends Application {
 	Saber lukeSaber = new Saber(true, "The Prodigal Son", "Green", lukeGreen,
 			lukeEmitter, lukeGuard, lukeSwitch, lukePommel);
 	Saber vaderSaber = new Saber(true, "The Chosen One", "Red", vaderRed,
-			vaderEmitter, vaderGuard, vaderSwitch, vaderPommel);	
+			vaderEmitter, vaderGuard, vaderSwitch, vaderPommel);
+	Saber darkSaber = new Saber(true, "The Dark Saber", "Black", darkBlack, 
+			darkEmitter, darkGuard, darkSwitch, darkPommel);
+	Saber origSaber1 = new Saber(true, "Original Saber #1", "Red", orig1Black, 
+			orig1Emitter, orig1Guard, orig1Switch, orig1Pommel);
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -121,6 +133,8 @@ public class SabersmithyReforged extends Application {
 		allSabers.add(kalSaber);
 		allSabers.add(lukeSaber);
 		allSabers.add(vaderSaber);
+		allSabers.add(darkSaber);
+		allSabers.add(origSaber1);
 		
 		/* MAIN MENU */
 		FlowPane smithyFlowPane = new FlowPane(Orientation.VERTICAL);
@@ -299,16 +313,18 @@ public class SabersmithyReforged extends Application {
 		});
 			
 		// Activate/Deactivate blade
-		Button btTest = new Button("Toggle Blade");
-		btTest.setOnAction(e -> {
-				// ! TOGGLE COLORED EMITTER !
+		Button btToggleBlade = new Button("Toggle Blade");
+		btToggleBlade.setOnAction(e -> {
+			saberIsOn = toggleBlade(customSaber, customSaberBox, 
+					customSaber.getColoredEmitter(), customSaber.getEmitter(), saberIsOn);
 		});
 		
-		forgeButtonBox.getChildren().addAll(btSave, btDiscard, btTest);		
+		forgeButtonBox.getChildren().addAll(btSave, btDiscard, btToggleBlade);		
 		bottomBox.getChildren().addAll(forgeButtonBox, nameBox);
 		
 		for (int i = 0; i < allSabers.size(); i++) {
 			// Add emitters to emitterPane
+			Image coloredEmitter = allSabers.get(i).getColoredEmitter();
 			Image emitterImage = allSabers.get(i).getEmitter();
 			ImageView emitterView = new ImageView(emitterImage);
 			emitterView.setFitHeight(50);
@@ -316,7 +332,7 @@ public class SabersmithyReforged extends Application {
 			Button btEmitter = new Button();
 			btEmitter.setGraphic(emitterView);
 			btEmitter.setOnAction(e -> {
-				changeEmitter(customSaber, customSaberBox, emitterImage);
+				changeEmitter(customSaber, customSaberBox, emitterImage, coloredEmitter);
 			});
 			emitterPane.getChildren().add(btEmitter);
 			
@@ -448,10 +464,199 @@ public class SabersmithyReforged extends Application {
 		
 		// Change customSaber's emitter
 		public static void changeEmitter(Saber customSaber, VBox customSaberBox, 
-				Image newEmitter) {
+				Image newEmitter, Image coloredEmitter) {
+			// Change emitter
 			customSaber.setEmitter(newEmitter);
 			ImageView newEmitterView = new ImageView(newEmitter);
 			customSaberBox.getChildren().set(0, newEmitterView);
+			
+			// Change coloredEmitter
+			switch(customSaber.getColor()) {
+				case "Black":
+					if (customSaber.getEmitter() == anakinEmitter) {
+						customSaber.setColoredEmitter(anakinBlack);
+					}
+					else if (customSaber.getEmitter() == ahsokaEmitter) {
+						customSaber.setColoredEmitter(ahsokaBlack);
+					}
+					else if (customSaber.getEmitter() == kalEmitter) {
+						customSaber.setColoredEmitter(kalBlack);
+					}
+					else if (customSaber.getEmitter() == lukeEmitter) {
+						customSaber.setColoredEmitter(lukeBlack);
+					}
+					else if (customSaber.getEmitter() == vaderEmitter) {
+						customSaber.setColoredEmitter(vaderBlack);
+					}
+					else if (customSaber.getEmitter() == darkEmitter) {
+						customSaber.setColoredEmitter(darkBlack);
+					}
+					else if (customSaber.getEmitter() == orig1Emitter) {
+						customSaber.setColoredEmitter(orig1Black);
+					}
+					break;
+				case "Blue":
+					if (customSaber.getEmitter() == anakinEmitter) {
+						customSaber.setColoredEmitter(anakinBlue);
+					}
+					else if (customSaber.getEmitter() == ahsokaEmitter) {
+						customSaber.setColoredEmitter(ahsokaBlue);
+					}
+					else if (customSaber.getEmitter() == kalEmitter) {
+						customSaber.setColoredEmitter(kalBlue);
+					}
+					else if (customSaber.getEmitter() == lukeEmitter) {
+						customSaber.setColoredEmitter(lukeBlue);
+					}
+					else if (customSaber.getEmitter() == vaderEmitter) {
+						customSaber.setColoredEmitter(vaderBlue);
+					}
+					else if (customSaber.getEmitter() == darkEmitter) {
+						customSaber.setColoredEmitter(darkBlack);
+					}
+					else if (customSaber.getEmitter() == orig1Emitter) {
+						customSaber.setColoredEmitter(orig1Blue);
+					}
+					break;
+				case "Green":
+					if (customSaber.getEmitter() == anakinEmitter) {
+						customSaber.setColoredEmitter(anakinGreen);
+					}
+					else if (customSaber.getEmitter() == ahsokaEmitter) {
+						customSaber.setColoredEmitter(ahsokaGreen);
+					}
+					else if (customSaber.getEmitter() == kalEmitter) {
+						customSaber.setColoredEmitter(kalGreen);
+					}
+					else if (customSaber.getEmitter() == lukeEmitter) {
+						customSaber.setColoredEmitter(lukeGreen);
+					}
+					else if (customSaber.getEmitter() == vaderEmitter) {
+						customSaber.setColoredEmitter(vaderGreen);
+					}
+					else if (customSaber.getEmitter() == darkEmitter) {
+						customSaber.setColoredEmitter(darkBlack);
+					}
+					else if (customSaber.getEmitter() == orig1Emitter) {
+						customSaber.setColoredEmitter(orig1Green);
+					}
+					break;
+				case "Orange":
+					if (customSaber.getEmitter() == anakinEmitter) {
+						customSaber.setColoredEmitter(anakinOrange);
+					}
+					else if (customSaber.getEmitter() == ahsokaEmitter) {
+						customSaber.setColoredEmitter(ahsokaOrange);
+					}
+					else if (customSaber.getEmitter() == kalEmitter) {
+						customSaber.setColoredEmitter(kalOrange);
+					}
+					else if (customSaber.getEmitter() == lukeEmitter) {
+						customSaber.setColoredEmitter(lukeOrange);
+					}
+					else if (customSaber.getEmitter() == vaderEmitter) {
+						customSaber.setColoredEmitter(vaderOrange);
+					}
+					else if (customSaber.getEmitter() == darkEmitter) {
+						customSaber.setColoredEmitter(darkBlack);
+					}
+					else if (customSaber.getEmitter() == orig1Emitter) {
+						customSaber.setColoredEmitter(orig1Orange);
+					}
+					break;
+				case "Purple":
+					if (customSaber.getEmitter() == anakinEmitter) {
+						customSaber.setColoredEmitter(anakinPurple);
+					}
+					else if (customSaber.getEmitter() == ahsokaEmitter) {
+						customSaber.setColoredEmitter(ahsokaPurple);
+					}
+					else if (customSaber.getEmitter() == kalEmitter) {
+						customSaber.setColoredEmitter(kalPurple);
+					}
+					else if (customSaber.getEmitter() == lukeEmitter) {
+						customSaber.setColoredEmitter(lukePurple);
+					}
+					else if (customSaber.getEmitter() == vaderEmitter) {
+						customSaber.setColoredEmitter(vaderPurple);
+					}
+					else if (customSaber.getEmitter() == darkEmitter) {
+						customSaber.setColoredEmitter(darkBlack);
+					}
+					else if (customSaber.getEmitter() == orig1Emitter) {
+						customSaber.setColoredEmitter(orig1Purple);
+					}
+					break;
+				case "Red":
+					if (customSaber.getEmitter() == anakinEmitter) {
+						customSaber.setColoredEmitter(anakinRed);
+					}
+					else if (customSaber.getEmitter() == ahsokaEmitter) {
+						customSaber.setColoredEmitter(ahsokaRed);
+					}
+					else if (customSaber.getEmitter() == kalEmitter) {
+						customSaber.setColoredEmitter(kalRed);
+					}
+					else if (customSaber.getEmitter() == lukeEmitter) {
+						customSaber.setColoredEmitter(lukeRed);
+					}
+					else if (customSaber.getEmitter() == vaderEmitter) {
+						customSaber.setColoredEmitter(vaderRed);
+					}
+					else if (customSaber.getEmitter() == darkEmitter) {
+						customSaber.setColoredEmitter(darkBlack);
+					}
+					else if (customSaber.getEmitter() == orig1Emitter) {
+						customSaber.setColoredEmitter(orig1Red);
+					}
+					break;
+				case "Silver":
+					if (customSaber.getEmitter() == anakinEmitter) {
+						customSaber.setColoredEmitter(anakinSilver);
+					}
+					else if (customSaber.getEmitter() == ahsokaEmitter) {
+						customSaber.setColoredEmitter(ahsokaSilver);
+					}
+					else if (customSaber.getEmitter() == kalEmitter) {
+						customSaber.setColoredEmitter(kalSilver);
+					}
+					else if (customSaber.getEmitter() == lukeEmitter) {
+						customSaber.setColoredEmitter(lukeSilver);
+					}
+					else if (customSaber.getEmitter() == vaderEmitter) {
+						customSaber.setColoredEmitter(vaderSilver);
+					}
+					else if (customSaber.getEmitter() == darkEmitter) {
+						customSaber.setColoredEmitter(darkBlack);
+					}
+					else if (customSaber.getEmitter() == orig1Emitter) {
+						customSaber.setColoredEmitter(orig1Silver);
+					}
+					break;
+				case "Yellow":
+					if (customSaber.getEmitter() == anakinEmitter) {
+						customSaber.setColoredEmitter(anakinYellow);
+					}
+					else if (customSaber.getEmitter() == ahsokaEmitter) {
+						customSaber.setColoredEmitter(ahsokaYellow);
+					}
+					else if (customSaber.getEmitter() == kalEmitter) {
+						customSaber.setColoredEmitter(kalYellow);
+					}
+					else if (customSaber.getEmitter() == lukeEmitter) {
+						customSaber.setColoredEmitter(lukeYellow);
+					}
+					else if (customSaber.getEmitter() == vaderEmitter) {
+						customSaber.setColoredEmitter(vaderYellow);
+					}
+					else if (customSaber.getEmitter() == darkEmitter) {
+						customSaber.setColoredEmitter(darkBlack);
+					}
+					else if (customSaber.getEmitter() == orig1Emitter) {
+						customSaber.setColoredEmitter(orig1Yellow);
+					}
+					break;
+			}
 		}
 		
 		// Changes customSaber's guard
@@ -476,5 +681,21 @@ public class SabersmithyReforged extends Application {
 			customSaber.setPommel(newPommel);
 			ImageView newPommelView = new ImageView(newPommel);
 			customSaberBox.getChildren().set(3, newPommelView);
+		}
+		
+		// Toggles blade on/off in forge
+		public static boolean toggleBlade(Saber customSaber, VBox customSaberBox, 
+				Image coloredEmitter, Image emitter, boolean saberIsOn) {
+			if (saberIsOn == false) {
+				ImageView coloredEmitterView = new ImageView(coloredEmitter);
+				customSaberBox.getChildren().set(0, coloredEmitterView);
+				saberIsOn = true;
+			}
+			else {
+				ImageView emitterView = new ImageView(emitter);
+				customSaberBox.getChildren().set(0, emitterView);
+				saberIsOn = false;
+			}
+			return saberIsOn;
 		}
 } 
