@@ -4,8 +4,12 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
+import javafx.scene.media.*;
+import javafx.scene.text.*;
 import javafx.stage.*;
+
+import java.io.File;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class SabersmithyReforged extends Application {
@@ -15,6 +19,40 @@ public class SabersmithyReforged extends Application {
 	// Boolean for toggling saber
 	boolean saberIsOn = false;
 	
+	// Import saber sounds
+	/*
+	File test = new File("Clash1Black.mp3");
+	Media clash1Black = new Media(test.toURI().toString());
+	Media clash2Black = new Media("/SaberSounds/Black/Clash2Black.mp3");
+	Media clash3Black = new Media("/SaberSounds/Black/Clash3Black.mp3");
+	Media deactivateBlack = new Media("/SaberSounds/Black/DeactivateBlack.mp3");
+	Media deflectBlack = new Media("/SaberSounds/Black/DeflectBlack.mp3");
+	Media humBlack = new Media("/SaberSounds/Black/HumBlack.mp3");
+	Media igniteBlack = new Media("/SaberSounds/Black/IgniteBlack.mp3");
+	Media swoosh1Black = new Media("/SaberSounds/Black/Swoosh1Black");
+	Media swoosh2Black = new Media("/SaberSounds/Black/Swoosh2Black");
+	Media swoosh3Black = new Media("/SaberSounds/Black/Swoosh3Black");
+	Media clash1Blue = new Media("/SaberSounds/Blue/Clash1Blue.mp3");
+	Media clash2Blue = new Media("/SaberSounds/Blue/Clash2Blue.mp3");
+	Media clash3Blue = new Media("/SaberSounds/Blue/Clash3Blue.mp3");
+	Media deactivateBlue = new Media("/SaberSounds/Blue/DeactivateBlue.mp3");
+	Media deflectBlue = new Media("/SaberSounds/Blue/DeflectBlue.mp3");
+	Media humBlue = new Media("/SaberSounds/Blue/HumBlue.mp3");
+	Media igniteBlue = new Media("/SaberSounds/Blue/IgniteBlue.mp3");
+	Media swoosh1Blue = new Media("/SaberSounds/Blue/Swoosh1Blue");
+	Media swoosh2Blue = new Media("/SaberSounds/Blue/Swoosh2Blue");
+	Media swoosh3Blue = new Media("/SaberSounds/Blue/Swoosh3Blue");
+	Media clash1Silver = new Media("/SaberSounds/Silver/Clash1Silver.mp3");
+	Media clash2Silver = new Media("/SaberSounds/Silver/Clash2Silver.mp3");
+	Media clash3Silver = new Media("/SaberSounds/Silver/Clash3Silver.mp3");
+	Media deactivateSilver = new Media("/SaberSounds/Silver/DeactivateSilver.mp3");
+	Media deflectSilver = new Media("/SaberSounds/Silver/DeflectSilver.mp3");
+	Media humSilver = new Media("/SaberSounds/Silver/HumSilver.mp3");
+	Media igniteSilver = new Media("/SaberSounds/Silver/IgniteSilver.mp3");
+	Media swoosh1Silver = new Media("/SaberSounds/Silver/Swoosh1Silver");
+	Media swoosh2Silver = new Media("/SaberSounds/Silver/Swoosh2Silver");
+	Media swoosh3Silver = new Media("/SaberSounds/Silver/Swoosh3Silver");
+	*/
 	// Import saber parts
 	static Image anakinEmitter = new Image("/Saber Parts/AnakinEmitter.png");
 	Image anakinGuard = new Image("/Saber Parts/AnakinGuard.png");
@@ -44,6 +82,10 @@ public class SabersmithyReforged extends Application {
 	Image orig1Guard = new Image("/Saber Parts/OrigGuard1.png");
 	Image orig1Switch = new Image("/Saber Parts/OrigSwitch1.png");
 	Image orig1Pommel = new Image("/Saber Parts/OrigPommel1.png");
+	static Image orig2Emitter = new Image("/Saber Parts/OrigEmitter2.png");
+	Image orig2Guard = new Image("/Saber Parts/OrigGuard2.png");
+	Image orig2Switch = new Image("/Saber Parts/OrigSwitch2.png");
+	Image orig2Pommel = new Image("/Saber Parts/OrigPommel2.png");
 			
 	// Import colored emitters
 	static Image anakinBlack = new Image("/Colored Emitters/AnakinEmitter/AnakinBlack.png");
@@ -95,6 +137,14 @@ public class SabersmithyReforged extends Application {
 	static Image orig1Red = new Image("/Colored Emitters/OrigEmitter1/Orig1Red.png");
 	static Image orig1Silver = new Image("/Colored Emitters/OrigEmitter1/Orig1Silver.png");
 	static Image orig1Yellow = new Image("/Colored Emitters/OrigEmitter1/Orig1Yellow.png");
+	static Image orig2Black = new Image("/Colored Emitters/OrigEmitter2/Orig2Black.png");
+	static Image orig2Blue = new Image("/Colored Emitters/OrigEmitter2/Orig2Blue.png");
+	static Image orig2Green = new Image("/Colored Emitters/OrigEmitter2/Orig2Green.png");
+	static Image orig2Orange = new Image("/Colored Emitters/OrigEmitter2/Orig2Orange.png");
+	static Image orig2Purple = new Image("/Colored Emitters/OrigEmitter2/Orig2Purple.png");
+	static Image orig2Red = new Image("/Colored Emitters/OrigEmitter2/Orig2Red.png");
+	static Image orig2Silver = new Image("/Colored Emitters/OrigEmitter2/Orig2Silver.png");
+	static Image orig2Yellow = new Image("/Colored Emitters/OrigEmitter2/Orig2Yellow.png");
 	
 	// Import crystals
 	Image blackCrystal = new Image("/Crystals/BlackCrystal.png");
@@ -124,6 +174,8 @@ public class SabersmithyReforged extends Application {
 			darkEmitter, darkGuard, darkSwitch, darkPommel);
 	Saber origSaber1 = new Saber(true, "Original Saber #1", "Red", orig1Black, 
 			orig1Emitter, orig1Guard, orig1Switch, orig1Pommel);
+	Saber origSaber2 = new Saber(true, "Original Saber #2", "Yellow", orig2Yellow, 
+			orig2Emitter, orig2Guard, orig2Switch, orig2Pommel);
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -135,6 +187,7 @@ public class SabersmithyReforged extends Application {
 		allSabers.add(vaderSaber);
 		allSabers.add(darkSaber);
 		allSabers.add(origSaber1);
+		allSabers.add(origSaber2);
 		
 		/* MAIN MENU */
 		FlowPane smithyFlowPane = new FlowPane(Orientation.VERTICAL);
@@ -214,7 +267,36 @@ public class SabersmithyReforged extends Application {
 			formatBox.setPrefHeight(200);
 			Label saberLabel = new Label(allSabers.get(i).getName(), formatBox);
 			saberLabel.setContentDisplay(ContentDisplay.TOP);
+
+			// Display saber's color
+			switch (allSabers.get(i).getColor()) {
+				case "Black":
+					formatBox.getChildren().add(new ImageView(blackCrystal));
+					break;
+				case "Blue":
+					formatBox.getChildren().add(new ImageView(blueCrystal));
+					break;
+				case "Green":
+					formatBox.getChildren().add(new ImageView(greenCrystal));
+					break;
+				case "Orange":
+					formatBox.getChildren().add(new ImageView(orangeCrystal));
+					break;
+				case "Purple":
+					formatBox.getChildren().add(new ImageView(purpleCrystal));
+					break;
+				case "Red":
+					formatBox.getChildren().add(new ImageView(redCrystal));
+					break;
+				case "Silver":
+					formatBox.getChildren().add(new ImageView(silverCrystal));
+					break;
+				case "Yellow":
+					formatBox.getChildren().add(new ImageView(yellowCrystal));
+					break;
+			}
 			
+			// Add comboBox based on saber's default value
 			if (allSabers.get(i).getIsDefault() == true) {
 				ComboBox<String> cbo = new ComboBox<>();
 				cbo.getItems().add("View");
@@ -291,11 +373,11 @@ public class SabersmithyReforged extends Application {
 				
 		HBox nameBox = new HBox();
 		nameBox.setAlignment(Pos.CENTER);
-		TextField name = new TextField(customSaber.getName());
-		name.setEditable(true);
-		name.setAlignment(Pos.BASELINE_CENTER);
-		name.setOnAction(e -> customSaber.setName(name.getText()));
-		nameBox.getChildren().add(name);
+		TextField tfName = new TextField(customSaber.getName());
+		tfName.setEditable(true);
+		tfName.setAlignment(Pos.BASELINE_CENTER);
+		//tfName.setOnAction(e -> customSaber.setName(tfName.getText()));
+		nameBox.getChildren().add(tfName);
 				
 		HBox forgeButtonBox = new HBox(20);
 		forgeButtonBox.setAlignment(Pos.BOTTOM_LEFT);
@@ -303,7 +385,7 @@ public class SabersmithyReforged extends Application {
 		// Save customSaber to gallery
 		Button btSave = new Button("Save");
 		btSave.setOnAction(e -> {
-			addCustomSaber(customSaber, allSabers, galleryFlowPane, primaryStage);
+			addCustomSaber(customSaber, allSabers, galleryFlowPane, tfName, primaryStage);
 		});
 		
 		// Return to smithyMenuScene without saving customSaber
@@ -324,7 +406,6 @@ public class SabersmithyReforged extends Application {
 		
 		for (int i = 0; i < allSabers.size(); i++) {
 			// Add emitters to emitterPane
-			Image coloredEmitter = allSabers.get(i).getColoredEmitter();
 			Image emitterImage = allSabers.get(i).getEmitter();
 			ImageView emitterView = new ImageView(emitterImage);
 			emitterView.setFitHeight(50);
@@ -332,7 +413,7 @@ public class SabersmithyReforged extends Application {
 			Button btEmitter = new Button();
 			btEmitter.setGraphic(emitterView);
 			btEmitter.setOnAction(e -> {
-				changeEmitter(customSaber, customSaberBox, emitterImage, coloredEmitter);
+				changeEmitter(customSaber, customSaberBox, emitterImage);
 			});
 			emitterPane.getChildren().add(btEmitter);
 			
@@ -374,38 +455,58 @@ public class SabersmithyReforged extends Application {
 		}
 		
 		// Add crystals to colorPane
-		ImageView blackView = new ImageView(blackCrystal);
 		Button btBlack = new Button();
-		btBlack.setGraphic(blackView);
-		btBlack.setOnAction(e -> customSaber.setColor("Black"));
-		ImageView blueView = new ImageView(blueCrystal);
+		btBlack.setGraphic(new ImageView(blackCrystal));
+		btBlack.setOnAction(e -> {
+			if (true) {
+				customSaber.setColor("Black");
+				changeColoredEmitter(customSaber, customSaberBox);
+			}
+		});
 		Button btBlue = new Button();
-		btBlue.setGraphic(blueView);
-		btBlue.setOnAction(e -> customSaber.setColor("Blue"));
-		ImageView greenView = new ImageView(greenCrystal);
+		btBlue.setGraphic(new ImageView(blueCrystal));
+		btBlue.setOnAction(e -> {
+			if (true) {
+				customSaber.setColor("Blue");
+				changeColoredEmitter(customSaber, customSaberBox);
+			}
+		});
 		Button btGreen = new Button();
-		btGreen.setGraphic(greenView);
-		btGreen.setOnAction(e -> customSaber.setColor("Green"));
-		ImageView orangeView = new ImageView(orangeCrystal);
+		btGreen.setGraphic(new ImageView(greenCrystal));
+		btGreen.setOnAction(e -> {
+			customSaber.setColor("Green");
+			changeColoredEmitter(customSaber, customSaberBox);
+		});
 		Button btOrange = new Button();
-		btOrange.setGraphic(orangeView);
-		btOrange.setOnAction(e -> customSaber.setColor("Orange"));
-		ImageView purpleView = new ImageView(purpleCrystal);
+		btOrange.setGraphic(new ImageView(orangeCrystal));
+		btOrange.setOnAction(e -> {
+			customSaber.setColor("Orange");
+			changeColoredEmitter(customSaber, customSaberBox);
+		});
 		Button btPurple = new Button();
-		btPurple.setGraphic(purpleView);
-		btPurple.setOnAction(e -> customSaber.setColor("Purple"));
-		ImageView redView = new ImageView(redCrystal);
+		btPurple.setGraphic(new ImageView(purpleCrystal));
+		btPurple.setOnAction(e -> {
+			customSaber.setColor("Purple");
+			changeColoredEmitter(customSaber, customSaberBox);
+		});
 		Button btRed = new Button();
-		btRed.setGraphic(redView);
-		btRed.setOnAction(e -> customSaber.setColor("Red"));
-		ImageView silverView = new ImageView(silverCrystal);
+		btRed.setGraphic(new ImageView(redCrystal));
+		btRed.setOnAction(e -> {
+			customSaber.setColor("Red");
+			changeColoredEmitter(customSaber, customSaberBox);
+		});
 		Button btSilver = new Button();
-		btSilver.setGraphic(silverView);
-		btSilver.setOnAction(e -> customSaber.setColor("Silver"));
-		ImageView yellowView = new ImageView(yellowCrystal);
+		btSilver.setGraphic(new ImageView(silverCrystal));
+		btSilver.setOnAction(e -> {
+			customSaber.setColor("Silver");
+			changeColoredEmitter(customSaber, customSaberBox);
+		});
 		Button btYellow = new Button();
-		btYellow.setGraphic(yellowView);
-		btYellow.setOnAction(e -> customSaber.setColor("Yellow"));
+		btYellow.setGraphic(new ImageView(yellowCrystal));
+		btYellow.setOnAction(e -> {
+			customSaber.setColor("Yellow");
+			changeColoredEmitter(customSaber, customSaberBox);
+		});
 		
 		colorPane.getChildren().addAll(btBlack, btBlue, btGreen, 
 				btOrange, btPurple, btRed, btSilver, btYellow);
@@ -426,9 +527,11 @@ public class SabersmithyReforged extends Application {
 	
 	// Adds a custom saber object to galleryFlowPane
 		public void addCustomSaber(Saber customSaber, ArrayList<Saber> allSabers, 
-				FlowPane galleryFlowPane, Stage primaryStage) {
+				FlowPane galleryFlowPane, TextField tfName, Stage primaryStage) {
 			// Add saber to list
 			allSabers.add(customSaber);
+			
+			// Add saber to gallery
 			VBox saberBox = new VBox();
 			ImageView emitter = new ImageView(customSaber.getEmitter());
 			ImageView guard = new ImageView(customSaber.getGuard());
@@ -436,14 +539,43 @@ public class SabersmithyReforged extends Application {
 			ImageView pommel = new ImageView(customSaber.getPommel());
 			saberBox.getChildren().addAll(emitter, guard, bladeSwitch, pommel);
 			
-			HBox formatBox = new HBox();
+			HBox formatBox = new HBox(20);
 			formatBox.getChildren().add(saberBox);
 			formatBox.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;");
 			formatBox.setPrefWidth(200);
 			formatBox.setPrefHeight(200);
 			
+			customSaber.setName(tfName.getText());
 			Label saberLabel = new Label(customSaber.getName(), formatBox);
 			saberLabel.setContentDisplay(ContentDisplay.TOP);
+			
+			// Display saber's color
+			switch (customSaber.getColor()) {
+				case "Black":
+					formatBox.getChildren().add(new ImageView(blackCrystal));
+					break;
+				case "Blue":
+					formatBox.getChildren().add(new ImageView(blueCrystal));
+					break;
+				case "Green":
+					formatBox.getChildren().add(new ImageView(greenCrystal));
+					break;
+				case "Orange":
+					formatBox.getChildren().add(new ImageView(orangeCrystal));
+					break;
+				case "Purple":
+					formatBox.getChildren().add(new ImageView(purpleCrystal));
+					break;
+				case "Red":
+					formatBox.getChildren().add(new ImageView(redCrystal));
+					break;
+				case "Silver":
+					formatBox.getChildren().add(new ImageView(silverCrystal));
+					break;
+				case "Yellow":
+					formatBox.getChildren().add(new ImageView(yellowCrystal));
+					break;
+			}
 			
 			if (customSaber.getIsDefault() == true) {
 				ComboBox<String> cbo = new ComboBox<>();
@@ -464,13 +596,18 @@ public class SabersmithyReforged extends Application {
 		
 		// Change customSaber's emitter
 		public static void changeEmitter(Saber customSaber, VBox customSaberBox, 
-				Image newEmitter, Image coloredEmitter) {
+				Image newEmitter) {
 			// Change emitter
 			customSaber.setEmitter(newEmitter);
 			ImageView newEmitterView = new ImageView(newEmitter);
 			customSaberBox.getChildren().set(0, newEmitterView);
 			
-			// Change coloredEmitter
+			// Change colored emitter
+			changeColoredEmitter(customSaber, customSaberBox);
+		}
+		
+		// Change customSaber's coloredEmitter
+		public static void changeColoredEmitter(Saber customSaber, VBox customSaberBox) {
 			switch(customSaber.getColor()) {
 				case "Black":
 					if (customSaber.getEmitter() == anakinEmitter) {
@@ -493,6 +630,9 @@ public class SabersmithyReforged extends Application {
 					}
 					else if (customSaber.getEmitter() == orig1Emitter) {
 						customSaber.setColoredEmitter(orig1Black);
+					}
+					else if (customSaber.getEmitter() == orig2Emitter) {
+						customSaber.setColoredEmitter(orig2Black);
 					}
 					break;
 				case "Blue":
@@ -517,6 +657,9 @@ public class SabersmithyReforged extends Application {
 					else if (customSaber.getEmitter() == orig1Emitter) {
 						customSaber.setColoredEmitter(orig1Blue);
 					}
+					else if (customSaber.getEmitter() == orig2Emitter) {
+						customSaber.setColoredEmitter(orig2Blue);
+					}
 					break;
 				case "Green":
 					if (customSaber.getEmitter() == anakinEmitter) {
@@ -539,6 +682,9 @@ public class SabersmithyReforged extends Application {
 					}
 					else if (customSaber.getEmitter() == orig1Emitter) {
 						customSaber.setColoredEmitter(orig1Green);
+					}
+					else if (customSaber.getEmitter() == orig2Emitter) {
+						customSaber.setColoredEmitter(orig2Green);
 					}
 					break;
 				case "Orange":
@@ -563,6 +709,9 @@ public class SabersmithyReforged extends Application {
 					else if (customSaber.getEmitter() == orig1Emitter) {
 						customSaber.setColoredEmitter(orig1Orange);
 					}
+					else if (customSaber.getEmitter() == orig2Emitter) {
+						customSaber.setColoredEmitter(orig2Orange);
+					}
 					break;
 				case "Purple":
 					if (customSaber.getEmitter() == anakinEmitter) {
@@ -585,6 +734,9 @@ public class SabersmithyReforged extends Application {
 					}
 					else if (customSaber.getEmitter() == orig1Emitter) {
 						customSaber.setColoredEmitter(orig1Purple);
+					}
+					else if (customSaber.getEmitter() == orig2Emitter) {
+						customSaber.setColoredEmitter(orig2Purple);
 					}
 					break;
 				case "Red":
@@ -609,6 +761,9 @@ public class SabersmithyReforged extends Application {
 					else if (customSaber.getEmitter() == orig1Emitter) {
 						customSaber.setColoredEmitter(orig1Red);
 					}
+					else if (customSaber.getEmitter() == orig2Emitter) {
+						customSaber.setColoredEmitter(orig2Red);
+					}
 					break;
 				case "Silver":
 					if (customSaber.getEmitter() == anakinEmitter) {
@@ -631,6 +786,9 @@ public class SabersmithyReforged extends Application {
 					}
 					else if (customSaber.getEmitter() == orig1Emitter) {
 						customSaber.setColoredEmitter(orig1Silver);
+					}
+					else if (customSaber.getEmitter() == orig2Emitter) {
+						customSaber.setColoredEmitter(orig2Silver);
 					}
 					break;
 				case "Yellow":
@@ -655,8 +813,11 @@ public class SabersmithyReforged extends Application {
 					else if (customSaber.getEmitter() == orig1Emitter) {
 						customSaber.setColoredEmitter(orig1Yellow);
 					}
+					else if (customSaber.getEmitter() == orig2Emitter) {
+						customSaber.setColoredEmitter(orig2Yellow);
+					}
 					break;
-			}
+			}			
 		}
 		
 		// Changes customSaber's guard
@@ -690,11 +851,15 @@ public class SabersmithyReforged extends Application {
 				ImageView coloredEmitterView = new ImageView(coloredEmitter);
 				customSaberBox.getChildren().set(0, coloredEmitterView);
 				saberIsOn = true;
+				//MediaPlayer activate = new MediaPlayer(new Media("/SaberSounds/Blue/IgniteBlue.mp3"));
+				//activate.play();
 			}
 			else {
 				ImageView emitterView = new ImageView(emitter);
 				customSaberBox.getChildren().set(0, emitterView);
 				saberIsOn = false;
+				//MediaPlayer deactivate = new MediaPlayer(new Media("/SaberSounds/Blue/DeactivateBlue.mp3"));
+				//deactivate.play();
 			}
 			return saberIsOn;
 		}
