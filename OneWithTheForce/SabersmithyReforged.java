@@ -4,20 +4,17 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
-import javafx.scene.media.*;
 import javafx.scene.text.*;
 import javafx.stage.*;
-
-import java.io.File;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class SabersmithyReforged extends Application {
+	BorderPane previewBorderPane;
 	// Scenes
-	Scene smithyMenuScene, forgeScene, galleryScene;
+	Scene smithyMenuScene, forgeScene, galleryScene, previewScene, editScene;
 	
 	// Boolean for toggling saber
-	boolean saberIsOn = false;
+	static boolean saberIsOn = false;
 	
 	// Import saber sounds
 	/*
@@ -172,7 +169,7 @@ public class SabersmithyReforged extends Application {
 			vaderEmitter, vaderGuard, vaderSwitch, vaderPommel);
 	Saber darkSaber = new Saber(true, "The Dark Saber", "Black", darkBlack, 
 			darkEmitter, darkGuard, darkSwitch, darkPommel);
-	Saber origSaber1 = new Saber(true, "Original Saber #1", "Red", orig1Black, 
+	Saber origSaber1 = new Saber(true, "Original Saber #1", "Red", orig1Red, 
 			orig1Emitter, orig1Guard, orig1Switch, orig1Pommel);
 	Saber origSaber2 = new Saber(true, "Original Saber #2", "Yellow", orig2Yellow, 
 			orig2Emitter, orig2Guard, orig2Switch, orig2Pommel);
@@ -239,6 +236,7 @@ public class SabersmithyReforged extends Application {
 		galleryScrollPane.setFitToWidth(true);
 		galleryScrollPane.setFitToHeight(true);
 		
+		// Gallery title
 		HBox galleryTitleBox = new HBox();
 		galleryTitleBox.setAlignment(Pos.CENTER);
 		Text galleryTitle = new Text("Gallery");
@@ -296,16 +294,26 @@ public class SabersmithyReforged extends Application {
 					break;
 			}
 			
-			// Add comboBox based on saber's default value
+			// Add buttons based on saber's default value
 			if (allSabers.get(i).getIsDefault() == true) {
-				ComboBox<String> cbo = new ComboBox<>();
-				cbo.getItems().add("View");
-				formatBox.getChildren().add(cbo);
+				Button btView = new Button("View");
+				int f = i;
+				btView.setOnAction(e -> previewSaber(allSabers.get(f), primaryStage, 
+						previewScene, previewBorderPane));
+				formatBox.getChildren().add(btView);
 			}
 			else {
-				ComboBox<String> cbo = new ComboBox<>();
-				cbo.getItems().addAll("View", "Edit", "Delete");
-				formatBox.getChildren().add(cbo);
+				Button btView = new Button("View");
+				btView.setOnAction(e -> primaryStage.setScene(previewScene));
+				Button btEdit = new Button("Edit");
+				btEdit.setOnAction(e -> primaryStage.setScene(editScene));
+				Button btDelete = new Button("Delete");
+				int f = i;
+				btDelete.setOnAction(e -> {
+					deleteSaber(allSabers.get(f), allSabers, galleryFlowPane, formatBox, saberLabel);
+				});
+				VBox saberButtonBox = new VBox(5);
+				saberButtonBox.getChildren().addAll(btView, btEdit, btDelete);
 			}
 			
 			galleryFlowPane.getChildren().addAll(formatBox, saberLabel);
@@ -518,6 +526,19 @@ public class SabersmithyReforged extends Application {
 		
 		// Create scene
 		forgeScene = new Scene(forgeBorderPane, 1280, 720);
+		
+		
+		/* PREVIEW SABER */
+		previewBorderPane = new BorderPane();
+		
+		Button btBackPreview = new Button("<--");
+		btBackPreview.setOnAction(e -> primaryStage.setScene(galleryScene));
+		
+		previewBorderPane.setLeft(btBackPreview);
+		
+		
+		// Create scene
+		previewScene = new Scene(previewBorderPane, 1280, 720);
 	}
 	
 	// Main method
@@ -526,341 +547,406 @@ public class SabersmithyReforged extends Application {
 	}
 	
 	// Adds a custom saber object to galleryFlowPane
-		public void addCustomSaber(Saber customSaber, ArrayList<Saber> allSabers, 
-				FlowPane galleryFlowPane, TextField tfName, Stage primaryStage) {
-			// Add saber to list
-			allSabers.add(customSaber);
+	public void addCustomSaber(Saber customSaber, ArrayList<Saber> allSabers, 
+			FlowPane galleryFlowPane, TextField tfName, Stage primaryStage) {
+		// Add saber to list
+		allSabers.add(customSaber);
 			
-			// Add saber to gallery
-			VBox saberBox = new VBox();
-			ImageView emitter = new ImageView(customSaber.getEmitter());
-			ImageView guard = new ImageView(customSaber.getGuard());
-			ImageView bladeSwitch = new ImageView(customSaber.getBladeSwitch());
-			ImageView pommel = new ImageView(customSaber.getPommel());
-			saberBox.getChildren().addAll(emitter, guard, bladeSwitch, pommel);
+		// Add saber to gallery
+		VBox saberBox = new VBox();
+		ImageView emitter = new ImageView(customSaber.getEmitter());
+		ImageView guard = new ImageView(customSaber.getGuard());
+		ImageView bladeSwitch = new ImageView(customSaber.getBladeSwitch());
+		ImageView pommel = new ImageView(customSaber.getPommel());
+		saberBox.getChildren().addAll(emitter, guard, bladeSwitch, pommel);
 			
-			HBox formatBox = new HBox(20);
-			formatBox.getChildren().add(saberBox);
-			formatBox.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;");
-			formatBox.setPrefWidth(200);
-			formatBox.setPrefHeight(200);
+		HBox formatBox = new HBox(20);
+		formatBox.getChildren().add(saberBox);
+		formatBox.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;");
+		formatBox.setPrefWidth(200);
+		formatBox.setPrefHeight(200);
 			
-			customSaber.setName(tfName.getText());
-			Label saberLabel = new Label(customSaber.getName(), formatBox);
-			saberLabel.setContentDisplay(ContentDisplay.TOP);
+		customSaber.setName(tfName.getText());
+		Label saberLabel = new Label(customSaber.getName(), formatBox);
+		saberLabel.setContentDisplay(ContentDisplay.TOP);
 			
-			// Display saber's color
-			switch (customSaber.getColor()) {
-				case "Black":
-					formatBox.getChildren().add(new ImageView(blackCrystal));
-					break;
-				case "Blue":
-					formatBox.getChildren().add(new ImageView(blueCrystal));
-					break;
-				case "Green":
-					formatBox.getChildren().add(new ImageView(greenCrystal));
-					break;
-				case "Orange":
-					formatBox.getChildren().add(new ImageView(orangeCrystal));
-					break;
-				case "Purple":
-					formatBox.getChildren().add(new ImageView(purpleCrystal));
-					break;
-				case "Red":
-					formatBox.getChildren().add(new ImageView(redCrystal));
-					break;
-				case "Silver":
-					formatBox.getChildren().add(new ImageView(silverCrystal));
-					break;
-				case "Yellow":
-					formatBox.getChildren().add(new ImageView(yellowCrystal));
-					break;
-			}
-			
-			if (customSaber.getIsDefault() == true) {
-				ComboBox<String> cbo = new ComboBox<>();
-				cbo.getItems().add("View");
-				formatBox.getChildren().add(cbo);
-			}
-			else if (customSaber.getIsDefault() == false) {
-				ComboBox<String> cbo = new ComboBox<>();
-				cbo.getItems().addAll("View", "Edit", "Delete");
-				formatBox.getChildren().add(cbo);
-			}
-			
-			galleryFlowPane.getChildren().add(formatBox);
-			galleryFlowPane.getChildren().add(saberLabel);
-			
-			primaryStage.setScene(smithyMenuScene);
+		// Display saber's color
+		switch (customSaber.getColor()) {
+			case "Black":
+				formatBox.getChildren().add(new ImageView(blackCrystal));
+				break;
+			case "Blue":
+				formatBox.getChildren().add(new ImageView(blueCrystal));
+				break;
+			case "Green":
+				formatBox.getChildren().add(new ImageView(greenCrystal));
+				break;
+			case "Orange":
+				formatBox.getChildren().add(new ImageView(orangeCrystal));
+				break;
+			case "Purple":
+				formatBox.getChildren().add(new ImageView(purpleCrystal));
+				break;
+			case "Red":
+				formatBox.getChildren().add(new ImageView(redCrystal));
+				break;
+			case "Silver":
+				formatBox.getChildren().add(new ImageView(silverCrystal));
+				break;
+			case "Yellow":
+				formatBox.getChildren().add(new ImageView(yellowCrystal));
+				break;
 		}
+			
+		if (customSaber.getIsDefault() == true) {
+			Button btView = new Button("View");
+			btView.setOnAction(e -> primaryStage.setScene(previewScene));
+			formatBox.getChildren().add(btView);
+		}
+		else if (customSaber.getIsDefault() == false) {
+			Button btView = new Button("View");
+			btView.setOnAction(e -> previewSaber(customSaber, primaryStage, 
+					previewScene, previewBorderPane));
+			Button btEdit = new Button("Edit");
+			btEdit.setOnAction(e -> primaryStage.setScene(editScene));
+			Button btDelete = new Button("Delete");
+			btDelete.setOnAction(e -> {
+				deleteSaber(customSaber, allSabers, galleryFlowPane, formatBox, saberLabel);
+			});
+			VBox saberButtonBox = new VBox(5);
+			saberButtonBox.getChildren().addAll(btView, btEdit, btDelete);
+			formatBox.getChildren().add(saberButtonBox);
+		}
+			
+		galleryFlowPane.getChildren().add(formatBox);
+		galleryFlowPane.getChildren().add(saberLabel);
 		
-		// Change customSaber's emitter
-		public static void changeEmitter(Saber customSaber, VBox customSaberBox, 
-				Image newEmitter) {
-			// Change emitter
-			customSaber.setEmitter(newEmitter);
-			ImageView newEmitterView = new ImageView(newEmitter);
-			customSaberBox.getChildren().set(0, newEmitterView);
-			
-			// Change colored emitter
-			changeColoredEmitter(customSaber, customSaberBox);
-		}
+		primaryStage.setScene(smithyMenuScene);
+	}
+	
+	// Deletes a saber
+	public static void deleteSaber(Saber saber, ArrayList<Saber> allSabers, 
+			FlowPane galleryFlowPane, HBox formatBox, Label saberLabel) {
+		// Remove saber from allSabers
+		allSabers.remove(saber);
 		
-		// Change customSaber's coloredEmitter
-		public static void changeColoredEmitter(Saber customSaber, VBox customSaberBox) {
-			switch(customSaber.getColor()) {
-				case "Black":
-					if (customSaber.getEmitter() == anakinEmitter) {
-						customSaber.setColoredEmitter(anakinBlack);
-					}
-					else if (customSaber.getEmitter() == ahsokaEmitter) {
-						customSaber.setColoredEmitter(ahsokaBlack);
-					}
-					else if (customSaber.getEmitter() == kalEmitter) {
-						customSaber.setColoredEmitter(kalBlack);
-					}
-					else if (customSaber.getEmitter() == lukeEmitter) {
-						customSaber.setColoredEmitter(lukeBlack);
-					}
-					else if (customSaber.getEmitter() == vaderEmitter) {
-						customSaber.setColoredEmitter(vaderBlack);
-					}
-					else if (customSaber.getEmitter() == darkEmitter) {
-						customSaber.setColoredEmitter(darkBlack);
-					}
-					else if (customSaber.getEmitter() == orig1Emitter) {
-						customSaber.setColoredEmitter(orig1Black);
-					}
-					else if (customSaber.getEmitter() == orig2Emitter) {
-						customSaber.setColoredEmitter(orig2Black);
-					}
-					break;
-				case "Blue":
-					if (customSaber.getEmitter() == anakinEmitter) {
-						customSaber.setColoredEmitter(anakinBlue);
-					}
-					else if (customSaber.getEmitter() == ahsokaEmitter) {
-						customSaber.setColoredEmitter(ahsokaBlue);
-					}
-					else if (customSaber.getEmitter() == kalEmitter) {
-						customSaber.setColoredEmitter(kalBlue);
-					}
-					else if (customSaber.getEmitter() == lukeEmitter) {
-						customSaber.setColoredEmitter(lukeBlue);
-					}
-					else if (customSaber.getEmitter() == vaderEmitter) {
-						customSaber.setColoredEmitter(vaderBlue);
-					}
-					else if (customSaber.getEmitter() == darkEmitter) {
-						customSaber.setColoredEmitter(darkBlack);
-					}
-					else if (customSaber.getEmitter() == orig1Emitter) {
-						customSaber.setColoredEmitter(orig1Blue);
-					}
-					else if (customSaber.getEmitter() == orig2Emitter) {
-						customSaber.setColoredEmitter(orig2Blue);
-					}
-					break;
-				case "Green":
-					if (customSaber.getEmitter() == anakinEmitter) {
-						customSaber.setColoredEmitter(anakinGreen);
-					}
-					else if (customSaber.getEmitter() == ahsokaEmitter) {
-						customSaber.setColoredEmitter(ahsokaGreen);
-					}
-					else if (customSaber.getEmitter() == kalEmitter) {
-						customSaber.setColoredEmitter(kalGreen);
-					}
-					else if (customSaber.getEmitter() == lukeEmitter) {
-						customSaber.setColoredEmitter(lukeGreen);
-					}
-					else if (customSaber.getEmitter() == vaderEmitter) {
-						customSaber.setColoredEmitter(vaderGreen);
-					}
-					else if (customSaber.getEmitter() == darkEmitter) {
-						customSaber.setColoredEmitter(darkBlack);
-					}
-					else if (customSaber.getEmitter() == orig1Emitter) {
-						customSaber.setColoredEmitter(orig1Green);
-					}
-					else if (customSaber.getEmitter() == orig2Emitter) {
-						customSaber.setColoredEmitter(orig2Green);
-					}
-					break;
-				case "Orange":
-					if (customSaber.getEmitter() == anakinEmitter) {
-						customSaber.setColoredEmitter(anakinOrange);
-					}
-					else if (customSaber.getEmitter() == ahsokaEmitter) {
-						customSaber.setColoredEmitter(ahsokaOrange);
-					}
-					else if (customSaber.getEmitter() == kalEmitter) {
-						customSaber.setColoredEmitter(kalOrange);
-					}
-					else if (customSaber.getEmitter() == lukeEmitter) {
-						customSaber.setColoredEmitter(lukeOrange);
-					}
-					else if (customSaber.getEmitter() == vaderEmitter) {
-						customSaber.setColoredEmitter(vaderOrange);
-					}
-					else if (customSaber.getEmitter() == darkEmitter) {
-						customSaber.setColoredEmitter(darkBlack);
-					}
-					else if (customSaber.getEmitter() == orig1Emitter) {
-						customSaber.setColoredEmitter(orig1Orange);
-					}
-					else if (customSaber.getEmitter() == orig2Emitter) {
-						customSaber.setColoredEmitter(orig2Orange);
-					}
-					break;
-				case "Purple":
-					if (customSaber.getEmitter() == anakinEmitter) {
-						customSaber.setColoredEmitter(anakinPurple);
-					}
-					else if (customSaber.getEmitter() == ahsokaEmitter) {
-						customSaber.setColoredEmitter(ahsokaPurple);
-					}
-					else if (customSaber.getEmitter() == kalEmitter) {
-						customSaber.setColoredEmitter(kalPurple);
-					}
-					else if (customSaber.getEmitter() == lukeEmitter) {
-						customSaber.setColoredEmitter(lukePurple);
-					}
-					else if (customSaber.getEmitter() == vaderEmitter) {
-						customSaber.setColoredEmitter(vaderPurple);
-					}
-					else if (customSaber.getEmitter() == darkEmitter) {
-						customSaber.setColoredEmitter(darkBlack);
-					}
-					else if (customSaber.getEmitter() == orig1Emitter) {
-						customSaber.setColoredEmitter(orig1Purple);
-					}
-					else if (customSaber.getEmitter() == orig2Emitter) {
-						customSaber.setColoredEmitter(orig2Purple);
-					}
-					break;
-				case "Red":
-					if (customSaber.getEmitter() == anakinEmitter) {
-						customSaber.setColoredEmitter(anakinRed);
-					}
-					else if (customSaber.getEmitter() == ahsokaEmitter) {
-						customSaber.setColoredEmitter(ahsokaRed);
-					}
-					else if (customSaber.getEmitter() == kalEmitter) {
-						customSaber.setColoredEmitter(kalRed);
-					}
-					else if (customSaber.getEmitter() == lukeEmitter) {
-						customSaber.setColoredEmitter(lukeRed);
-					}
-					else if (customSaber.getEmitter() == vaderEmitter) {
-						customSaber.setColoredEmitter(vaderRed);
-					}
-					else if (customSaber.getEmitter() == darkEmitter) {
-						customSaber.setColoredEmitter(darkBlack);
-					}
-					else if (customSaber.getEmitter() == orig1Emitter) {
-						customSaber.setColoredEmitter(orig1Red);
-					}
-					else if (customSaber.getEmitter() == orig2Emitter) {
-						customSaber.setColoredEmitter(orig2Red);
-					}
-					break;
-				case "Silver":
-					if (customSaber.getEmitter() == anakinEmitter) {
-						customSaber.setColoredEmitter(anakinSilver);
-					}
-					else if (customSaber.getEmitter() == ahsokaEmitter) {
-						customSaber.setColoredEmitter(ahsokaSilver);
-					}
-					else if (customSaber.getEmitter() == kalEmitter) {
-						customSaber.setColoredEmitter(kalSilver);
-					}
-					else if (customSaber.getEmitter() == lukeEmitter) {
-						customSaber.setColoredEmitter(lukeSilver);
-					}
-					else if (customSaber.getEmitter() == vaderEmitter) {
-						customSaber.setColoredEmitter(vaderSilver);
-					}
-					else if (customSaber.getEmitter() == darkEmitter) {
-						customSaber.setColoredEmitter(darkBlack);
-					}
-					else if (customSaber.getEmitter() == orig1Emitter) {
-						customSaber.setColoredEmitter(orig1Silver);
-					}
-					else if (customSaber.getEmitter() == orig2Emitter) {
-						customSaber.setColoredEmitter(orig2Silver);
-					}
-					break;
-				case "Yellow":
-					if (customSaber.getEmitter() == anakinEmitter) {
-						customSaber.setColoredEmitter(anakinYellow);
-					}
-					else if (customSaber.getEmitter() == ahsokaEmitter) {
-						customSaber.setColoredEmitter(ahsokaYellow);
-					}
-					else if (customSaber.getEmitter() == kalEmitter) {
-						customSaber.setColoredEmitter(kalYellow);
-					}
-					else if (customSaber.getEmitter() == lukeEmitter) {
-						customSaber.setColoredEmitter(lukeYellow);
-					}
-					else if (customSaber.getEmitter() == vaderEmitter) {
-						customSaber.setColoredEmitter(vaderYellow);
-					}
-					else if (customSaber.getEmitter() == darkEmitter) {
-						customSaber.setColoredEmitter(darkBlack);
-					}
-					else if (customSaber.getEmitter() == orig1Emitter) {
-						customSaber.setColoredEmitter(orig1Yellow);
-					}
-					else if (customSaber.getEmitter() == orig2Emitter) {
-						customSaber.setColoredEmitter(orig2Yellow);
-					}
-					break;
-			}			
-		}
+		// Remove saber from galleryFlowPane
+		galleryFlowPane.getChildren().removeAll(formatBox, saberLabel);
+	}
+	
+	// Previews a saber in the gallery
+	public static void previewSaber(Saber saber, Stage primaryStage, Scene previewScene, 
+			BorderPane previewBorderPane) {
+		// Set scene
+		primaryStage.setScene(previewScene);
 		
-		// Changes customSaber's guard
-		public static void changeGuard(Saber customSaber, VBox customSaberBox, 
-				Image newGuard) {
-			customSaber.setGuard(newGuard);
-			ImageView newGuardView = new ImageView(newGuard);
-			customSaberBox.getChildren().set(1, newGuardView);
-		}
+		// Display saber
+		VBox saberBox = new VBox();
+		saberBox.setAlignment(Pos.BOTTOM_CENTER);
+		saberBox.getChildren().addAll(new ImageView(saber.getEmitter()), 
+				new ImageView(saber.getGuard()), new ImageView(saber.getBladeSwitch()), 
+				new ImageView(saber.getPommel()));
 		
-		// Changes customSaber's switch
-		public static void changeSwitch(Saber customSaber, VBox customSaberBox, 
-				Image newBladeSwitch) {
-			customSaber.setBladeSwitch(newBladeSwitch);
-			ImageView newBladeSwitchView = new ImageView(newBladeSwitch);
-			customSaberBox.getChildren().set(2, newBladeSwitchView);
-		}
+		// Preview name
+		HBox previewTitleBox = new HBox();
+		previewTitleBox.setAlignment(Pos.CENTER);
+		previewTitleBox.getChildren().add(new Text(saber.getName()));
 		
-		// Changes customSaber's pommel
-		public static void changePommel(Saber customSaber, VBox customSaberBox, 
-				Image newPommel) {
-			customSaber.setPommel(newPommel);
-			ImageView newPommelView = new ImageView(newPommel);
-			customSaberBox.getChildren().set(3, newPommelView);
-		}
+		// Preview sounds
+		Button btClash1 = new Button("Clash1");
+		Button btClash2 = new Button("Clash2");
+		Button btClash3 = new Button("Clash3");
+		Button btDeflect = new Button("Deflect");
+		Button btSwoosh1 = new Button("Swoosh1");
+		Button btSwoosh2 = new Button("Swoosh2");
+		Button btSwoosh3 = new Button("Swoosh3");
 		
-		// Toggles blade on/off in forge
-		public static boolean toggleBlade(Saber customSaber, VBox customSaberBox, 
-				Image coloredEmitter, Image emitter, boolean saberIsOn) {
-			if (saberIsOn == false) {
-				ImageView coloredEmitterView = new ImageView(coloredEmitter);
-				customSaberBox.getChildren().set(0, coloredEmitterView);
-				saberIsOn = true;
-				//MediaPlayer activate = new MediaPlayer(new Media("/SaberSounds/Blue/IgniteBlue.mp3"));
-				//activate.play();
-			}
-			else {
-				ImageView emitterView = new ImageView(emitter);
-				customSaberBox.getChildren().set(0, emitterView);
-				saberIsOn = false;
-				//MediaPlayer deactivate = new MediaPlayer(new Media("/SaberSounds/Blue/DeactivateBlue.mp3"));
-				//deactivate.play();
-			}
-			return saberIsOn;
+		VBox soundBox = new VBox(10, new Label("Sounds:"));
+		soundBox.getChildren().addAll(btClash1, btClash2, btClash3, 
+				btDeflect, btSwoosh1, btSwoosh2, btSwoosh3);
+		
+		// Blade toggle button
+		Button btToggleBlade = new Button("Toggle Blade");
+		HBox toggleBox = new HBox();
+		toggleBox.setAlignment(Pos.CENTER);
+		toggleBox.getChildren().add(btToggleBlade);
+		btToggleBlade.setOnAction(e -> {
+			saberIsOn = toggleBlade(saber, saberBox, saber.getColoredEmitter(), saber.getEmitter(), saberIsOn);
+		});
+		
+		previewBorderPane.setCenter(saberBox);
+		previewBorderPane.setTop(previewTitleBox);
+		previewBorderPane.setBottom(toggleBox);
+		previewBorderPane.setRight(soundBox);
+	}
+		
+	// Change customSaber's emitter
+	public static void changeEmitter(Saber customSaber, VBox customSaberBox, 
+			Image newEmitter) {
+		// Change emitter
+		customSaber.setEmitter(newEmitter);
+		ImageView newEmitterView = new ImageView(newEmitter);
+		customSaberBox.getChildren().set(0, newEmitterView);
+		
+		// Change colored emitter
+		changeColoredEmitter(customSaber, customSaberBox);
+	}
+		
+	// Change customSaber's coloredEmitter
+	public static void changeColoredEmitter(Saber customSaber, VBox customSaberBox) {
+		switch(customSaber.getColor()) {
+			case "Black":
+				if (customSaber.getEmitter() == anakinEmitter) {
+					customSaber.setColoredEmitter(anakinBlack);
+				}
+				else if (customSaber.getEmitter() == ahsokaEmitter) {
+					customSaber.setColoredEmitter(ahsokaBlack);
+				}
+				else if (customSaber.getEmitter() == kalEmitter) {
+					customSaber.setColoredEmitter(kalBlack);
+				}
+				else if (customSaber.getEmitter() == lukeEmitter) {
+					customSaber.setColoredEmitter(lukeBlack);
+				}
+				else if (customSaber.getEmitter() == vaderEmitter) {
+					customSaber.setColoredEmitter(vaderBlack);
+				}
+				else if (customSaber.getEmitter() == darkEmitter) {
+					customSaber.setColoredEmitter(darkBlack);
+				}
+				else if (customSaber.getEmitter() == orig1Emitter) {
+					customSaber.setColoredEmitter(orig1Black);
+				}
+				else if (customSaber.getEmitter() == orig2Emitter) {
+					customSaber.setColoredEmitter(orig2Black);
+				}
+				break;
+			case "Blue":
+				if (customSaber.getEmitter() == anakinEmitter) {
+					customSaber.setColoredEmitter(anakinBlue);
+				}
+				else if (customSaber.getEmitter() == ahsokaEmitter) {
+					customSaber.setColoredEmitter(ahsokaBlue);
+				}
+				else if (customSaber.getEmitter() == kalEmitter) {
+					customSaber.setColoredEmitter(kalBlue);
+				}
+				else if (customSaber.getEmitter() == lukeEmitter) {
+					customSaber.setColoredEmitter(lukeBlue);
+				}
+				else if (customSaber.getEmitter() == vaderEmitter) {
+					customSaber.setColoredEmitter(vaderBlue);
+				}
+				else if (customSaber.getEmitter() == darkEmitter) {
+					customSaber.setColoredEmitter(darkBlack);
+				}
+				else if (customSaber.getEmitter() == orig1Emitter) {
+					customSaber.setColoredEmitter(orig1Blue);
+				}
+				else if (customSaber.getEmitter() == orig2Emitter) {
+					customSaber.setColoredEmitter(orig2Blue);
+				}
+				break;
+			case "Green":
+				if (customSaber.getEmitter() == anakinEmitter) {
+					customSaber.setColoredEmitter(anakinGreen);
+				}
+				else if (customSaber.getEmitter() == ahsokaEmitter) {
+					customSaber.setColoredEmitter(ahsokaGreen);
+				}
+				else if (customSaber.getEmitter() == kalEmitter) {
+					customSaber.setColoredEmitter(kalGreen);
+				}
+				else if (customSaber.getEmitter() == lukeEmitter) {
+					customSaber.setColoredEmitter(lukeGreen);
+				}
+				else if (customSaber.getEmitter() == vaderEmitter) {
+					customSaber.setColoredEmitter(vaderGreen);
+				}
+				else if (customSaber.getEmitter() == darkEmitter) {
+					customSaber.setColoredEmitter(darkBlack);
+				}
+				else if (customSaber.getEmitter() == orig1Emitter) {
+					customSaber.setColoredEmitter(orig1Green);
+				}
+				else if (customSaber.getEmitter() == orig2Emitter) {
+					customSaber.setColoredEmitter(orig2Green);
+				}
+				break;
+			case "Orange":
+				if (customSaber.getEmitter() == anakinEmitter) {
+					customSaber.setColoredEmitter(anakinOrange);
+				}
+				else if (customSaber.getEmitter() == ahsokaEmitter) {
+					customSaber.setColoredEmitter(ahsokaOrange);
+				}
+				else if (customSaber.getEmitter() == kalEmitter) {
+					customSaber.setColoredEmitter(kalOrange);
+				}
+				else if (customSaber.getEmitter() == lukeEmitter) {
+					customSaber.setColoredEmitter(lukeOrange);
+				}
+				else if (customSaber.getEmitter() == vaderEmitter) {
+					customSaber.setColoredEmitter(vaderOrange);
+				}
+				else if (customSaber.getEmitter() == darkEmitter) {
+					customSaber.setColoredEmitter(darkBlack);
+				}
+				else if (customSaber.getEmitter() == orig1Emitter) {
+					customSaber.setColoredEmitter(orig1Orange);
+				}
+				else if (customSaber.getEmitter() == orig2Emitter) {
+					customSaber.setColoredEmitter(orig2Orange);
+				}
+				break;
+			case "Purple":
+				if (customSaber.getEmitter() == anakinEmitter) {
+					customSaber.setColoredEmitter(anakinPurple);
+				}
+				else if (customSaber.getEmitter() == ahsokaEmitter) {
+					customSaber.setColoredEmitter(ahsokaPurple);
+				}
+				else if (customSaber.getEmitter() == kalEmitter) {
+					customSaber.setColoredEmitter(kalPurple);
+				}
+				else if (customSaber.getEmitter() == lukeEmitter) {
+					customSaber.setColoredEmitter(lukePurple);
+				}
+				else if (customSaber.getEmitter() == vaderEmitter) {
+					customSaber.setColoredEmitter(vaderPurple);
+				}
+				else if (customSaber.getEmitter() == darkEmitter) {
+					customSaber.setColoredEmitter(darkBlack);
+				}
+				else if (customSaber.getEmitter() == orig1Emitter) {
+					customSaber.setColoredEmitter(orig1Purple);
+				}
+				else if (customSaber.getEmitter() == orig2Emitter) {
+					customSaber.setColoredEmitter(orig2Purple);
+				}
+				break;
+			case "Red":
+				if (customSaber.getEmitter() == anakinEmitter) {
+					customSaber.setColoredEmitter(anakinRed);
+				}
+				else if (customSaber.getEmitter() == ahsokaEmitter) {
+					customSaber.setColoredEmitter(ahsokaRed);
+				}
+				else if (customSaber.getEmitter() == kalEmitter) {
+					customSaber.setColoredEmitter(kalRed);
+				}
+				else if (customSaber.getEmitter() == lukeEmitter) {
+					customSaber.setColoredEmitter(lukeRed);
+				}
+				else if (customSaber.getEmitter() == vaderEmitter) {
+					customSaber.setColoredEmitter(vaderRed);
+				}
+				else if (customSaber.getEmitter() == darkEmitter) {
+					customSaber.setColoredEmitter(darkBlack);
+				}
+				else if (customSaber.getEmitter() == orig1Emitter) {
+					customSaber.setColoredEmitter(orig1Red);
+				}
+				else if (customSaber.getEmitter() == orig2Emitter) {
+					customSaber.setColoredEmitter(orig2Red);
+				}
+				break;
+			case "Silver":
+				if (customSaber.getEmitter() == anakinEmitter) {
+					customSaber.setColoredEmitter(anakinSilver);
+				}
+				else if (customSaber.getEmitter() == ahsokaEmitter) {
+					customSaber.setColoredEmitter(ahsokaSilver);
+				}
+				else if (customSaber.getEmitter() == kalEmitter) {
+					customSaber.setColoredEmitter(kalSilver);
+				}
+				else if (customSaber.getEmitter() == lukeEmitter) {
+					customSaber.setColoredEmitter(lukeSilver);
+				}
+				else if (customSaber.getEmitter() == vaderEmitter) {
+					customSaber.setColoredEmitter(vaderSilver);
+				}
+				else if (customSaber.getEmitter() == darkEmitter) {
+					customSaber.setColoredEmitter(darkBlack);
+				}
+				else if (customSaber.getEmitter() == orig1Emitter) {
+					customSaber.setColoredEmitter(orig1Silver);
+				}
+				else if (customSaber.getEmitter() == orig2Emitter) {
+					customSaber.setColoredEmitter(orig2Silver);
+				}
+				break;
+			case "Yellow":
+				if (customSaber.getEmitter() == anakinEmitter) {
+					customSaber.setColoredEmitter(anakinYellow);
+				}
+				else if (customSaber.getEmitter() == ahsokaEmitter) {
+					customSaber.setColoredEmitter(ahsokaYellow);
+				}
+				else if (customSaber.getEmitter() == kalEmitter) {
+					customSaber.setColoredEmitter(kalYellow);
+				}
+				else if (customSaber.getEmitter() == lukeEmitter) {
+					customSaber.setColoredEmitter(lukeYellow);
+				}
+				else if (customSaber.getEmitter() == vaderEmitter) {
+					customSaber.setColoredEmitter(vaderYellow);
+				}
+				else if (customSaber.getEmitter() == darkEmitter) {
+					customSaber.setColoredEmitter(darkBlack);
+				}
+				else if (customSaber.getEmitter() == orig1Emitter) {
+					customSaber.setColoredEmitter(orig1Yellow);
+				}
+				else if (customSaber.getEmitter() == orig2Emitter) {
+					customSaber.setColoredEmitter(orig2Yellow);
+				}
+				break;
+		}			
+	}
+		
+	// Changes customSaber's guard
+	public static void changeGuard(Saber customSaber, VBox customSaberBox, 
+			Image newGuard) {
+		customSaber.setGuard(newGuard);
+		ImageView newGuardView = new ImageView(newGuard);
+		customSaberBox.getChildren().set(1, newGuardView);
+	}
+	
+	// Changes customSaber's switch
+	public static void changeSwitch(Saber customSaber, VBox customSaberBox, 
+			Image newBladeSwitch) {
+		customSaber.setBladeSwitch(newBladeSwitch);
+		ImageView newBladeSwitchView = new ImageView(newBladeSwitch);
+		customSaberBox.getChildren().set(2, newBladeSwitchView);
+	}
+		
+	// Changes customSaber's pommel
+	public static void changePommel(Saber customSaber, VBox customSaberBox, 
+			Image newPommel) {
+		customSaber.setPommel(newPommel);
+		ImageView newPommelView = new ImageView(newPommel);
+		customSaberBox.getChildren().set(3, newPommelView);
+	}
+		
+	// Toggles blade on/off in forge
+	public static boolean toggleBlade(Saber customSaber, VBox customSaberBox, 
+			Image coloredEmitter, Image emitter, boolean saberIsOn) {
+		if (saberIsOn == false) {
+			ImageView coloredEmitterView = new ImageView(coloredEmitter);
+			customSaberBox.getChildren().set(0, coloredEmitterView);
+			saberIsOn = true;
+			//MediaPlayer activate = new MediaPlayer(new Media("/SaberSounds/Blue/IgniteBlue.mp3"));
+			//activate.play();
 		}
+		else {
+			ImageView emitterView = new ImageView(emitter);
+			customSaberBox.getChildren().set(0, emitterView);
+			saberIsOn = false;
+			//MediaPlayer deactivate = new MediaPlayer(new Media("/SaberSounds/Blue/DeactivateBlue.mp3"));
+			//deactivate.play();
+		}
+		return saberIsOn;
+	}
 } 
