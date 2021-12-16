@@ -4,22 +4,25 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
 import javafx.scene.text.*;
 import javafx.stage.*;
+
+import java.nio.file.Paths;
 import java.util.*;
 
 public class SabersmithyReforged extends Application {
-	BorderPane previewBorderPane;
 	// Scenes
 	Scene smithyMenuScene, forgeScene, galleryScene, previewScene, editScene;
 	
+	// BorderPane for saber preview
+	BorderPane previewBorderPane;
+	
 	// Boolean for toggling saber
 	static boolean saberIsOn = false;
-	
-	// Import saber sounds
 	/*
-	File test = new File("Clash1Black.mp3");
-	Media clash1Black = new Media(test.toURI().toString());
+	// Import saber sounds
+	Media clash1Black = new Media("/SaberSounds/Black/Clash1Black.mp3");
 	Media clash2Black = new Media("/SaberSounds/Black/Clash2Black.mp3");
 	Media clash3Black = new Media("/SaberSounds/Black/Clash3Black.mp3");
 	Media deactivateBlack = new Media("/SaberSounds/Black/DeactivateBlack.mp3");
@@ -384,7 +387,6 @@ public class SabersmithyReforged extends Application {
 		TextField tfName = new TextField(customSaber.getName());
 		tfName.setEditable(true);
 		tfName.setAlignment(Pos.BASELINE_CENTER);
-		//tfName.setOnAction(e -> customSaber.setName(tfName.getText()));
 		nameBox.getChildren().add(tfName);
 				
 		HBox forgeButtonBox = new HBox(20);
@@ -393,7 +395,12 @@ public class SabersmithyReforged extends Application {
 		// Save customSaber to gallery
 		Button btSave = new Button("Save");
 		btSave.setOnAction(e -> {
-			addCustomSaber(customSaber, allSabers, galleryFlowPane, tfName, primaryStage);
+			try {
+				addCustomSaber(customSaber, allSabers, galleryFlowPane, tfName, primaryStage);
+			} catch (CloneNotSupportedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 		});
 		
 		// Return to smithyMenuScene without saving customSaber
@@ -536,7 +543,6 @@ public class SabersmithyReforged extends Application {
 		
 		previewBorderPane.setLeft(btBackPreview);
 		
-		
 		// Create scene
 		previewScene = new Scene(previewBorderPane, 1280, 720);
 	}
@@ -548,16 +554,20 @@ public class SabersmithyReforged extends Application {
 	
 	// Adds a custom saber object to galleryFlowPane
 	public void addCustomSaber(Saber customSaber, ArrayList<Saber> allSabers, 
-			FlowPane galleryFlowPane, TextField tfName, Stage primaryStage) {
+			FlowPane galleryFlowPane, TextField tfName, Stage primaryStage) 
+					throws CloneNotSupportedException {
+		// Clone saber
+		Saber galleryCustomSaber = (Saber)customSaber.clone();
+		
 		// Add saber to list
-		allSabers.add(customSaber);
+		allSabers.add(galleryCustomSaber);
 			
 		// Add saber to gallery
 		VBox saberBox = new VBox();
-		ImageView emitter = new ImageView(customSaber.getEmitter());
-		ImageView guard = new ImageView(customSaber.getGuard());
-		ImageView bladeSwitch = new ImageView(customSaber.getBladeSwitch());
-		ImageView pommel = new ImageView(customSaber.getPommel());
+		ImageView emitter = new ImageView(galleryCustomSaber.getEmitter());
+		ImageView guard = new ImageView(galleryCustomSaber.getGuard());
+		ImageView bladeSwitch = new ImageView(galleryCustomSaber.getBladeSwitch());
+		ImageView pommel = new ImageView(galleryCustomSaber.getPommel());
 		saberBox.getChildren().addAll(emitter, guard, bladeSwitch, pommel);
 			
 		HBox formatBox = new HBox(20);
@@ -566,12 +576,12 @@ public class SabersmithyReforged extends Application {
 		formatBox.setPrefWidth(200);
 		formatBox.setPrefHeight(200);
 			
-		customSaber.setName(tfName.getText());
-		Label saberLabel = new Label(customSaber.getName(), formatBox);
+		galleryCustomSaber.setName(tfName.getText());
+		Label saberLabel = new Label(galleryCustomSaber.getName(), formatBox);
 		saberLabel.setContentDisplay(ContentDisplay.TOP);
 			
 		// Display saber's color
-		switch (customSaber.getColor()) {
+		switch (galleryCustomSaber.getColor()) {
 			case "Black":
 				formatBox.getChildren().add(new ImageView(blackCrystal));
 				break;
@@ -598,20 +608,21 @@ public class SabersmithyReforged extends Application {
 				break;
 		}
 			
-		if (customSaber.getIsDefault() == true) {
+		if (galleryCustomSaber.getIsDefault() == true) {
 			Button btView = new Button("View");
-			btView.setOnAction(e -> primaryStage.setScene(previewScene));
+			btView.setOnAction(e -> previewSaber(galleryCustomSaber, primaryStage, 
+					previewScene, previewBorderPane));
 			formatBox.getChildren().add(btView);
 		}
-		else if (customSaber.getIsDefault() == false) {
+		else if (galleryCustomSaber.getIsDefault() == false) {
 			Button btView = new Button("View");
-			btView.setOnAction(e -> previewSaber(customSaber, primaryStage, 
+			btView.setOnAction(e -> previewSaber(galleryCustomSaber, primaryStage, 
 					previewScene, previewBorderPane));
 			Button btEdit = new Button("Edit");
 			btEdit.setOnAction(e -> primaryStage.setScene(editScene));
 			Button btDelete = new Button("Delete");
 			btDelete.setOnAction(e -> {
-				deleteSaber(customSaber, allSabers, galleryFlowPane, formatBox, saberLabel);
+				deleteSaber(galleryCustomSaber, allSabers, galleryFlowPane, formatBox, saberLabel);
 			});
 			VBox saberButtonBox = new VBox(5);
 			saberButtonBox.getChildren().addAll(btView, btEdit, btDelete);
@@ -620,7 +631,7 @@ public class SabersmithyReforged extends Application {
 			
 		galleryFlowPane.getChildren().add(formatBox);
 		galleryFlowPane.getChildren().add(saberLabel);
-		
+
 		primaryStage.setScene(smithyMenuScene);
 	}
 	
