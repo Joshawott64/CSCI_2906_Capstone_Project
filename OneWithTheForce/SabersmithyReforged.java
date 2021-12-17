@@ -5,8 +5,13 @@ import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.*;
 import javafx.stage.*;
+
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -19,9 +24,11 @@ public class SabersmithyReforged extends Application {
 	
 	// Boolean for toggling saber
 	static boolean saberIsOn = false;
-	/*
+	
 	// Import saber sounds
-	Media clash1Black = new Media("/SaberSounds/Black/Clash1Black.mp3");
+	
+	
+	/*
 	Media clash2Black = new Media("/SaberSounds/Black/Clash2Black.mp3");
 	Media clash3Black = new Media("/SaberSounds/Black/Clash3Black.mp3");
 	Media deactivateBlack = new Media("/SaberSounds/Black/DeactivateBlack.mp3");
@@ -177,7 +184,7 @@ public class SabersmithyReforged extends Application {
 			orig2Emitter, orig2Guard, orig2Switch, orig2Pommel);
 	
 	@Override
-	public void start(Stage primaryStage) {
+	public void start(Stage primaryStage) throws URISyntaxException {
 		// Add default sabers to allSabers
 		allSabers.add(anakinSaber);
 		allSabers.add(ahsokaSaber);
@@ -187,6 +194,11 @@ public class SabersmithyReforged extends Application {
 		allSabers.add(darkSaber);
 		allSabers.add(origSaber1);
 		allSabers.add(origSaber2);
+		
+		// Import media
+		Media igniteSilver = new Media(getClass().getResource("/SaberSounds/Silver/IgniteSilver.mp3").toURI().toString());
+		MediaPlayer ignite = new MediaPlayer(igniteSilver);
+		ignite.play();
 		
 		/* MAIN MENU */
 		FlowPane smithyFlowPane = new FlowPane(Orientation.VERTICAL);
