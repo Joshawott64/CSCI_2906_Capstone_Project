@@ -471,18 +471,14 @@ public class SabersmithyReforged extends Application {
 		Button btBlack = new Button();
 		btBlack.setGraphic(new ImageView(blackCrystal));
 		btBlack.setOnAction(e -> {
-			if (true) {
-				customSaber.setColor("Black");
-				changeColoredEmitter(customSaber, customSaberBox);
-			}
+			customSaber.setColor("Black");
+			changeColoredEmitter(customSaber, customSaberBox);
 		});
 		Button btBlue = new Button();
 		btBlue.setGraphic(new ImageView(blueCrystal));
 		btBlue.setOnAction(e -> {
-			if (true) {
-				customSaber.setColor("Blue");
-				changeColoredEmitter(customSaber, customSaberBox);
-			}
+			customSaber.setColor("Blue");
+			changeColoredEmitter(customSaber, customSaberBox);
 		});
 		Button btGreen = new Button();
 		btGreen.setGraphic(new ImageView(greenCrystal));
@@ -563,6 +559,11 @@ public class SabersmithyReforged extends Application {
 					throws CloneNotSupportedException {
 		// Clone saber
 		Saber galleryCustomSaber = (Saber)customSaber.clone();
+		
+		// Set color to black if emitter is darkEmitter
+		if (galleryCustomSaber.getEmitter().equals(darkEmitter)) {
+			galleryCustomSaber.setColor("Black");
+		}
 		
 		// Add saber to list
 		allSabers.add(galleryCustomSaber);
@@ -831,18 +832,14 @@ public class SabersmithyReforged extends Application {
 		Button btBlack = new Button();
 		btBlack.setGraphic(new ImageView(blackCrystal));
 		btBlack.setOnAction(e -> {
-			if (true) {
-				saber.setColor("Black");
-				changeColoredEmitter(saber, saberBox);
-			}
+			saber.setColor("Black");
+			changeColoredEmitter(saber, saberBox);
 		});
 		Button btBlue = new Button();
 		btBlue.setGraphic(new ImageView(blueCrystal));
 		btBlue.setOnAction(e -> {
-			if (true) {
-				saber.setColor("Blue");
-				changeColoredEmitter(saber, saberBox);
-			}
+			saber.setColor("Blue");
+			changeColoredEmitter(saber, saberBox);
 		});
 		Button btGreen = new Button();
 		btGreen.setGraphic(new ImageView(greenCrystal));
@@ -905,6 +902,12 @@ public class SabersmithyReforged extends Application {
 		gallerySaberBox.getChildren().set(1, new ImageView(saber.getGuard()));
 		gallerySaberBox.getChildren().set(2, new ImageView(saber.getBladeSwitch()));
 		gallerySaberBox.getChildren().set(3, new ImageView(saber.getPommel()));
+		
+		
+		// Update color if emitter is darkEmitter
+		if (saber.getEmitter().equals(darkEmitter)) {
+			saber.setColor("Black");
+		}
 		
 		// Update crystal display
 		switch (saber.getColor()) {
