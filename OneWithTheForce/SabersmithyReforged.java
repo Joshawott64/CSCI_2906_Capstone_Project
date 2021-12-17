@@ -7,7 +7,6 @@ import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.text.*;
 import javafx.stage.*;
-
 import java.nio.file.Paths;
 import java.util.*;
 
