@@ -15,8 +15,8 @@ public class SabersmithyReforged extends Application {
 	// Scenes
 	Scene smithyMenuScene, forgeScene, galleryScene, previewScene, editScene;
 	
-	// BorderPane for saber preview
-	BorderPane previewBorderPane;
+	// BorderPanes for saber preview and saber editing
+	BorderPane previewBorderPane, editBorderPane;
 	
 	// Boolean for toggling saber
 	static boolean saberIsOn = false;
@@ -147,14 +147,14 @@ public class SabersmithyReforged extends Application {
 	static Image orig2Yellow = new Image("/Colored Emitters/OrigEmitter2/Orig2Yellow.png");
 	
 	// Import crystals
-	Image blackCrystal = new Image("/Crystals/BlackCrystal.png");
-	Image blueCrystal = new Image("/Crystals/BlueCrystal.png");
-	Image greenCrystal = new Image("/Crystals/GreenCrystal.png");
-	Image orangeCrystal = new Image("/Crystals/OrangeCrystal.png");
-	Image purpleCrystal = new Image("/Crystals/PurpleCrystal.png");
-	Image redCrystal = new Image("/Crystals/RedCrystal.png");
-	Image silverCrystal = new Image("/Crystals/SilverCrystal.png");
-	Image yellowCrystal = new Image("/Crystals/YellowCrystal.png");
+	static Image blackCrystal = new Image("/Crystals/BlackCrystal.png");
+	static Image blueCrystal = new Image("/Crystals/BlueCrystal.png");
+	static Image greenCrystal = new Image("/Crystals/GreenCrystal.png");
+	static Image orangeCrystal = new Image("/Crystals/OrangeCrystal.png");
+	static Image purpleCrystal = new Image("/Crystals/PurpleCrystal.png");
+	static Image redCrystal = new Image("/Crystals/RedCrystal.png");
+	static Image silverCrystal = new Image("/Crystals/SilverCrystal.png");
+	static Image yellowCrystal = new Image("/Crystals/YellowCrystal.png");
 	
 	// Arraylist for storing all saber objects
 	ArrayList<Saber> allSabers = new ArrayList<>();
@@ -398,7 +398,6 @@ public class SabersmithyReforged extends Application {
 			try {
 				addCustomSaber(customSaber, allSabers, galleryFlowPane, tfName, primaryStage);
 			} catch (CloneNotSupportedException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 		});
@@ -545,6 +544,13 @@ public class SabersmithyReforged extends Application {
 		
 		// Create scene
 		previewScene = new Scene(previewBorderPane, 1280, 720);
+		
+		
+		/* EDIT SABER */
+		editBorderPane = new BorderPane();
+		
+		// Create scene
+		editScene = new Scene(editBorderPane, 1280, 720);
 	}
 	
 	// Main method
@@ -619,7 +625,9 @@ public class SabersmithyReforged extends Application {
 			btView.setOnAction(e -> previewSaber(galleryCustomSaber, primaryStage, 
 					previewScene, previewBorderPane));
 			Button btEdit = new Button("Edit");
-			btEdit.setOnAction(e -> primaryStage.setScene(editScene));
+			btEdit.setOnAction(e -> editSaber(galleryCustomSaber, primaryStage, 
+					editScene, galleryScene, editBorderPane, allSabers, formatBox, 
+					saberBox, saberLabel));
 			Button btDelete = new Button("Delete");
 			btDelete.setOnAction(e -> {
 				deleteSaber(galleryCustomSaber, allSabers, galleryFlowPane, formatBox, saberLabel);
@@ -645,7 +653,7 @@ public class SabersmithyReforged extends Application {
 		galleryFlowPane.getChildren().removeAll(formatBox, saberLabel);
 	}
 	
-	// Previews a saber in the gallery
+	// Previews a saber from the gallery
 	public static void previewSaber(Saber saber, Stage primaryStage, Scene previewScene, 
 			BorderPane previewBorderPane) {
 		// Set scene
@@ -689,6 +697,246 @@ public class SabersmithyReforged extends Application {
 		previewBorderPane.setTop(previewTitleBox);
 		previewBorderPane.setBottom(toggleBox);
 		previewBorderPane.setRight(soundBox);
+	}
+	
+	// Edit saber from the gallery
+	public static void editSaber(Saber saber, Stage primaryStage, Scene editScene, 
+			Scene galleryScene, BorderPane editBorderPane, ArrayList<Saber> allSabers, 
+			HBox formatBox, VBox gallerySaberBox, Label saberLabel) {
+		// Set scene
+		primaryStage.setScene(editScene);
+		
+		Label lblEmitter = new Label("Emitters");
+		lblEmitter.setContentDisplay(ContentDisplay.BOTTOM);
+		FlowPane emitterPane = new FlowPane(5, 5, lblEmitter);
+		emitterPane.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;");
+		emitterPane.setPadding(new Insets(5, 5, 5, 5));
+		
+		Label lblGuard = new Label("Guards");
+		lblGuard.setContentDisplay(ContentDisplay.BOTTOM);
+		FlowPane guardPane = new FlowPane(5, 5, lblGuard);
+		guardPane.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;");
+		guardPane.setPadding(new Insets(5, 5, 5, 5));
+		
+		Label lblColor = new Label("Colors");
+		lblColor.setContentDisplay(ContentDisplay.BOTTOM);
+		FlowPane colorPane = new FlowPane(5, 5, lblColor);
+		colorPane.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;");
+		colorPane.setPadding(new Insets(5, 5, 5, 5));
+		
+		Label lblSwitch = new Label("Switches");
+		lblSwitch.setContentDisplay(ContentDisplay.BOTTOM);
+		FlowPane switchPane = new FlowPane(5, 5, lblSwitch);
+		switchPane.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;");
+		switchPane.setPadding(new Insets(5, 5, 5, 5));
+		
+		Label lblPommel = new Label("Pommels");
+		lblPommel.setContentDisplay(ContentDisplay.BOTTOM);
+		FlowPane pommelPane = new FlowPane(5, 5, lblPommel);
+		pommelPane.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;");
+		pommelPane.setPadding(new Insets(5, 5, 5, 5));
+		
+		VBox leftBox = new VBox(20);
+		leftBox.getChildren().addAll(emitterPane, guardPane);
+		VBox rightBox = new VBox(20);
+		rightBox.getChildren().addAll(colorPane, switchPane, pommelPane);
+		
+		// Display saber
+		VBox saberBox = new VBox();
+		saberBox.setAlignment(Pos.BOTTOM_CENTER);
+		saberBox.getChildren().addAll(new ImageView(saber.getEmitter()), 
+				new ImageView(saber.getGuard()), new ImageView(saber.getBladeSwitch()), 
+				new ImageView(saber.getPommel()));
+		
+		HBox bottomBox = new HBox(100);
+		bottomBox.setAlignment(Pos.CENTER);
+				
+		HBox nameBox = new HBox();
+		nameBox.setAlignment(Pos.CENTER);
+		TextField tfName = new TextField(saber.getName());
+		tfName.setEditable(true);
+		tfName.setAlignment(Pos.BASELINE_CENTER);
+		nameBox.getChildren().add(tfName);
+				
+		HBox buttonBox = new HBox(20);
+		buttonBox.setAlignment(Pos.BOTTOM_LEFT);
+		
+		// Save saber to gallery
+		Button btSave = new Button("Save");
+		btSave.setOnAction(e -> {
+			saveEditedSaber(saber, formatBox, gallerySaberBox, saberLabel, tfName,
+					primaryStage, galleryScene);
+		});
+					
+		// Activate/Deactivate blade
+		Button btToggleBlade = new Button("Toggle Blade");
+		btToggleBlade.setOnAction(e -> {
+			saberIsOn = toggleBlade(saber, saberBox, 
+					saber.getColoredEmitter(), saber.getEmitter(), saberIsOn);
+		});
+		
+		buttonBox.getChildren().addAll(btSave, btToggleBlade);		
+		bottomBox.getChildren().addAll(buttonBox, nameBox);
+		
+		for (int i = 0; i < 8; i++) {
+			// Add emitters to emitterPane
+			Image emitterImage = allSabers.get(i).getEmitter();
+			ImageView emitterView = new ImageView(emitterImage);
+			emitterView.setFitHeight(50);
+			emitterView.setFitWidth(50);
+			Button btEmitter = new Button();
+			btEmitter.setGraphic(emitterView);
+			btEmitter.setOnAction(e -> {
+				changeEmitter(saber, saberBox, emitterImage);
+			});
+			emitterPane.getChildren().add(btEmitter);
+			
+			// Add guards to guardPane
+			Image guardImage = allSabers.get(i).getGuard();
+			ImageView guardView = new ImageView(guardImage);
+			guardView.setFitHeight(50);
+			guardView.setFitWidth(50);
+			Button btGuard = new Button();
+			btGuard.setGraphic(guardView);
+			btGuard.setOnAction(e -> {
+				changeGuard(saber, saberBox, guardImage);
+			});
+			guardPane.getChildren().add(btGuard);
+			
+			// Add switches to switchPane
+			Image switchImage = allSabers.get(i).getBladeSwitch();
+			ImageView switchView = new ImageView(switchImage);
+			switchView.setFitHeight(50);
+			switchView.setFitWidth(50);
+			Button btSwitch = new Button();
+			btSwitch.setGraphic(switchView);
+			btSwitch.setOnAction(e -> {
+				changeSwitch(saber, saberBox, switchImage);
+			});
+			switchPane.getChildren().add(btSwitch);
+			
+			// Add pommels to pommelPane
+			Image pommelImage = allSabers.get(i).getPommel();
+			ImageView pommelView = new ImageView(pommelImage);
+			pommelView.setFitHeight(50);
+			pommelView.setFitWidth(50);
+			Button btPommel = new Button();
+			btPommel.setGraphic(pommelView);
+			btPommel.setOnAction(e -> {
+				changePommel(saber, saberBox, pommelImage);
+			});
+			pommelPane.getChildren().add(btPommel);
+		}
+		
+		// Add crystals to colorPane
+		Button btBlack = new Button();
+		btBlack.setGraphic(new ImageView(blackCrystal));
+		btBlack.setOnAction(e -> {
+			if (true) {
+				saber.setColor("Black");
+				changeColoredEmitter(saber, saberBox);
+			}
+		});
+		Button btBlue = new Button();
+		btBlue.setGraphic(new ImageView(blueCrystal));
+		btBlue.setOnAction(e -> {
+			if (true) {
+				saber.setColor("Blue");
+				changeColoredEmitter(saber, saberBox);
+			}
+		});
+		Button btGreen = new Button();
+		btGreen.setGraphic(new ImageView(greenCrystal));
+		btGreen.setOnAction(e -> {
+			saber.setColor("Green");
+			changeColoredEmitter(saber, saberBox);
+		});
+		Button btOrange = new Button();
+		btOrange.setGraphic(new ImageView(orangeCrystal));
+		btOrange.setOnAction(e -> {
+			saber.setColor("Orange");
+			changeColoredEmitter(saber, saberBox);
+		});
+		Button btPurple = new Button();
+		btPurple.setGraphic(new ImageView(purpleCrystal));
+		btPurple.setOnAction(e -> {
+			saber.setColor("Purple");
+			changeColoredEmitter(saber, saberBox);
+		});
+		Button btRed = new Button();
+		btRed.setGraphic(new ImageView(redCrystal));
+		btRed.setOnAction(e -> {
+			saber.setColor("Red");
+			changeColoredEmitter(saber, saberBox);
+		});
+		Button btSilver = new Button();
+		btSilver.setGraphic(new ImageView(silverCrystal));
+		btSilver.setOnAction(e -> {
+			saber.setColor("Silver");
+			changeColoredEmitter(saber, saberBox);
+		});
+		Button btYellow = new Button();
+		btYellow.setGraphic(new ImageView(yellowCrystal));
+		btYellow.setOnAction(e -> {
+			saber.setColor("Yellow");
+			changeColoredEmitter(saber, saberBox);
+		});
+		
+		colorPane.getChildren().addAll(btBlack, btBlue, btGreen, 
+				btOrange, btPurple, btRed, btSilver, btYellow);
+		
+		editBorderPane.setLeft(leftBox);
+		editBorderPane.setRight(rightBox);
+		editBorderPane.setCenter(saberBox);
+		editBorderPane.setBottom(bottomBox);
+	}
+	
+	// Save edited saber to galleryFlowPane
+	public static void saveEditedSaber(Saber saber, HBox formatBox, 
+			VBox gallerySaberBox, Label saberLabel, TextField tfName, 
+			Stage primaryStage, Scene galleryScene) {
+		// Update saber name
+		saber.setName(tfName.getText());
+		
+		// Update saberLabel
+		saberLabel.setText(saber.getName());
+		
+		// Update gallerySaberBox
+		gallerySaberBox.getChildren().set(0, new ImageView(saber.getEmitter()));
+		gallerySaberBox.getChildren().set(1, new ImageView(saber.getGuard()));
+		gallerySaberBox.getChildren().set(2, new ImageView(saber.getBladeSwitch()));
+		gallerySaberBox.getChildren().set(3, new ImageView(saber.getPommel()));
+		
+		// Update crystal display
+		switch (saber.getColor()) {
+			case "Black":
+				formatBox.getChildren().set(1, new ImageView(blackCrystal));
+				break;
+			case "Blue":
+				formatBox.getChildren().set(1, new ImageView(blueCrystal));
+				break;
+			case "Green":
+				formatBox.getChildren().set(1, new ImageView(greenCrystal));
+				break;
+			case "Orange":
+				formatBox.getChildren().set(1, new ImageView(orangeCrystal));
+				break;
+			case "Purple":
+				formatBox.getChildren().set(1, new ImageView(purpleCrystal));
+				break;
+			case "Red":
+				formatBox.getChildren().set(1, new ImageView(redCrystal));
+				break;
+			case "Silver":
+				formatBox.getChildren().set(1, new ImageView(silverCrystal));
+				break;
+			case "Yellow":
+				formatBox.getChildren().set(1, new ImageView(yellowCrystal));
+				break;
+		}
+		
+		// Set scene
+		primaryStage.setScene(galleryScene);
 	}
 		
 	// Change customSaber's emitter
