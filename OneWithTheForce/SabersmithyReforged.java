@@ -1,4 +1,3 @@
-import javafx.application.*;
 import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
@@ -8,20 +7,25 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.*;
 import javafx.stage.*;
 import javafx.util.Duration;
-
 import java.net.URISyntaxException;
 import java.util.*;
 
-public class SabersmithyReforged extends Application {
-	static MediaPlayer hum;
+public class SabersmithyReforged extends Main {
 	// Scenes
-	Scene smithyMenuScene, forgeScene, galleryScene, previewScene, editScene;
+	Scene smithyMenuScene;
+	Scene forgeScene;
+	Scene galleryScene;
+	Scene previewScene;
+	Scene editScene;
 	
 	// BorderPanes for saber preview and saber editing
 	BorderPane previewBorderPane, editBorderPane;
 	
 	// Boolean for toggling saber
 	static boolean saberIsOn = false;
+	
+	// MediaPlayer for saber hum
+	static MediaPlayer hum;
 	
 	// Import saber parts
 	static Image anakinEmitter = new Image("/Saber Parts/AnakinEmitter.png");
