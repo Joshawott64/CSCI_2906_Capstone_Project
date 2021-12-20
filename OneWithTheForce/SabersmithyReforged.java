@@ -4,18 +4,16 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
 import javafx.scene.layout.*;
-import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.*;
 import javafx.stage.*;
+import javafx.util.Duration;
 
-import java.io.File;
 import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Paths;
 import java.util.*;
 
 public class SabersmithyReforged extends Application {
+	static MediaPlayer hum;
 	// Scenes
 	Scene smithyMenuScene, forgeScene, galleryScene, previewScene, editScene;
 	
@@ -25,40 +23,6 @@ public class SabersmithyReforged extends Application {
 	// Boolean for toggling saber
 	static boolean saberIsOn = false;
 	
-	// Import saber sounds
-	
-	
-	/*
-	Media clash2Black = new Media("/SaberSounds/Black/Clash2Black.mp3");
-	Media clash3Black = new Media("/SaberSounds/Black/Clash3Black.mp3");
-	Media deactivateBlack = new Media("/SaberSounds/Black/DeactivateBlack.mp3");
-	Media deflectBlack = new Media("/SaberSounds/Black/DeflectBlack.mp3");
-	Media humBlack = new Media("/SaberSounds/Black/HumBlack.mp3");
-	Media igniteBlack = new Media("/SaberSounds/Black/IgniteBlack.mp3");
-	Media swoosh1Black = new Media("/SaberSounds/Black/Swoosh1Black");
-	Media swoosh2Black = new Media("/SaberSounds/Black/Swoosh2Black");
-	Media swoosh3Black = new Media("/SaberSounds/Black/Swoosh3Black");
-	Media clash1Blue = new Media("/SaberSounds/Blue/Clash1Blue.mp3");
-	Media clash2Blue = new Media("/SaberSounds/Blue/Clash2Blue.mp3");
-	Media clash3Blue = new Media("/SaberSounds/Blue/Clash3Blue.mp3");
-	Media deactivateBlue = new Media("/SaberSounds/Blue/DeactivateBlue.mp3");
-	Media deflectBlue = new Media("/SaberSounds/Blue/DeflectBlue.mp3");
-	Media humBlue = new Media("/SaberSounds/Blue/HumBlue.mp3");
-	Media igniteBlue = new Media("/SaberSounds/Blue/IgniteBlue.mp3");
-	Media swoosh1Blue = new Media("/SaberSounds/Blue/Swoosh1Blue");
-	Media swoosh2Blue = new Media("/SaberSounds/Blue/Swoosh2Blue");
-	Media swoosh3Blue = new Media("/SaberSounds/Blue/Swoosh3Blue");
-	Media clash1Silver = new Media("/SaberSounds/Silver/Clash1Silver.mp3");
-	Media clash2Silver = new Media("/SaberSounds/Silver/Clash2Silver.mp3");
-	Media clash3Silver = new Media("/SaberSounds/Silver/Clash3Silver.mp3");
-	Media deactivateSilver = new Media("/SaberSounds/Silver/DeactivateSilver.mp3");
-	Media deflectSilver = new Media("/SaberSounds/Silver/DeflectSilver.mp3");
-	Media humSilver = new Media("/SaberSounds/Silver/HumSilver.mp3");
-	Media igniteSilver = new Media("/SaberSounds/Silver/IgniteSilver.mp3");
-	Media swoosh1Silver = new Media("/SaberSounds/Silver/Swoosh1Silver");
-	Media swoosh2Silver = new Media("/SaberSounds/Silver/Swoosh2Silver");
-	Media swoosh3Silver = new Media("/SaberSounds/Silver/Swoosh3Silver");
-	*/
 	// Import saber parts
 	static Image anakinEmitter = new Image("/Saber Parts/AnakinEmitter.png");
 	Image anakinGuard = new Image("/Saber Parts/AnakinGuard.png");
@@ -194,11 +158,6 @@ public class SabersmithyReforged extends Application {
 		allSabers.add(darkSaber);
 		allSabers.add(origSaber1);
 		allSabers.add(origSaber2);
-		
-		// Import media
-		Media igniteSilver = new Media(getClass().getResource("/SaberSounds/Silver/IgniteSilver.mp3").toURI().toString());
-		MediaPlayer ignite = new MediaPlayer(igniteSilver);
-		ignite.play();
 		
 		/* MAIN MENU */
 		FlowPane smithyFlowPane = new FlowPane(Orientation.VERTICAL);
@@ -422,8 +381,12 @@ public class SabersmithyReforged extends Application {
 		// Activate/Deactivate blade
 		Button btToggleBlade = new Button("Toggle Blade");
 		btToggleBlade.setOnAction(e -> {
-			saberIsOn = toggleBlade(customSaber, customSaberBox, 
-					customSaber.getColoredEmitter(), customSaber.getEmitter(), saberIsOn);
+			try {
+				saberIsOn = toggleBlade(customSaber, customSaberBox, 
+						customSaber.getColoredEmitter(), customSaber.getEmitter(), saberIsOn);
+			} catch (URISyntaxException e1) {
+				e1.printStackTrace();
+			}
 		});
 		
 		forgeButtonBox.getChildren().addAll(btSave, btDiscard, btToggleBlade);		
@@ -685,12 +648,68 @@ public class SabersmithyReforged extends Application {
 		
 		// Preview sounds
 		Button btClash1 = new Button("Clash1");
+		btClash1.setOnAction(e -> {
+			try {
+				MediaPlayer clash1 = new MediaPlayer(saber.getClash1());
+				clash1.play();
+			} catch (URISyntaxException e1) {
+				e1.printStackTrace();
+			}
+		});
 		Button btClash2 = new Button("Clash2");
+		btClash2.setOnAction(e -> {
+			try {
+				MediaPlayer clash2 = new MediaPlayer(saber.getClash2());
+				clash2.play();
+			} catch (URISyntaxException e1) {
+				e1.printStackTrace();
+			}
+		});
 		Button btClash3 = new Button("Clash3");
+		btClash3.setOnAction(e -> {
+			try {
+				MediaPlayer clash3 = new MediaPlayer(saber.getClash3());
+				clash3.play();
+			} catch (URISyntaxException e1) {
+				e1.printStackTrace();
+			}
+		});
 		Button btDeflect = new Button("Deflect");
+		btDeflect.setOnAction(e -> {
+			try {
+				MediaPlayer deflect = new MediaPlayer(saber.getDeflect());
+				deflect.play();
+			} catch (URISyntaxException e1) {
+				e1.printStackTrace();
+			}
+		});
 		Button btSwoosh1 = new Button("Swoosh1");
+		btSwoosh1.setOnAction(e -> {
+			try {
+				MediaPlayer swoosh1 = new MediaPlayer(saber.getSwoosh1());
+				swoosh1.play();
+			} catch (URISyntaxException e1) {
+				e1.printStackTrace();
+			}
+		});
 		Button btSwoosh2 = new Button("Swoosh2");
+		btSwoosh2.setOnAction(e -> {
+			try {
+				MediaPlayer swoosh2 = new MediaPlayer(saber.getSwoosh2());
+				swoosh2.play();
+			} catch (URISyntaxException e1) {
+				e1.printStackTrace();
+			}
+		});
 		Button btSwoosh3 = new Button("Swoosh3");
+		btSwoosh3.setOnAction(e -> {
+			try {
+				MediaPlayer swoosh3 = new MediaPlayer(saber.getSwoosh3());
+				swoosh3.play();
+			} catch (URISyntaxException e1) {
+				e1.printStackTrace();
+			}
+		});
 		
 		VBox soundBox = new VBox(10, new Label("Sounds:"));
 		soundBox.getChildren().addAll(btClash1, btClash2, btClash3, 
@@ -702,7 +721,11 @@ public class SabersmithyReforged extends Application {
 		toggleBox.setAlignment(Pos.CENTER);
 		toggleBox.getChildren().add(btToggleBlade);
 		btToggleBlade.setOnAction(e -> {
-			saberIsOn = toggleBlade(saber, saberBox, saber.getColoredEmitter(), saber.getEmitter(), saberIsOn);
+			try {
+				saberIsOn = toggleBlade(saber, saberBox, saber.getColoredEmitter(), saber.getEmitter(), saberIsOn);
+			} catch (URISyntaxException e1) {
+				e1.printStackTrace();
+			}
 		});
 		
 		previewBorderPane.setCenter(saberBox);
@@ -783,8 +806,12 @@ public class SabersmithyReforged extends Application {
 		// Activate/Deactivate blade
 		Button btToggleBlade = new Button("Toggle Blade");
 		btToggleBlade.setOnAction(e -> {
-			saberIsOn = toggleBlade(saber, saberBox, 
-					saber.getColoredEmitter(), saber.getEmitter(), saberIsOn);
+			try {
+				saberIsOn = toggleBlade(saber, saberBox, 
+						saber.getColoredEmitter(), saber.getEmitter(), saberIsOn);
+			} catch (URISyntaxException e1) {
+				e1.printStackTrace();
+			}
 		});
 		
 		buttonBox.getChildren().addAll(btSave, btToggleBlade);		
@@ -1205,20 +1232,28 @@ public class SabersmithyReforged extends Application {
 		
 	// Toggles blade on/off in forge
 	public static boolean toggleBlade(Saber customSaber, VBox customSaberBox, 
-			Image coloredEmitter, Image emitter, boolean saberIsOn) {
+			Image coloredEmitter, Image emitter, boolean saberIsOn) throws URISyntaxException {
 		if (saberIsOn == false) {
 			ImageView coloredEmitterView = new ImageView(coloredEmitter);
 			customSaberBox.getChildren().set(0, coloredEmitterView);
 			saberIsOn = true;
-			//MediaPlayer activate = new MediaPlayer(new Media("/SaberSounds/Blue/IgniteBlue.mp3"));
-			//activate.play();
+			MediaPlayer ignite = new MediaPlayer(customSaber.getIgnite());
+			ignite.play();
+			hum = new MediaPlayer(customSaber.getHum());
+			hum.setOnEndOfMedia(new Runnable() {
+				public void run() {
+					hum.seek(Duration.ZERO);
+				}
+			});
+			hum.play();
 		}
 		else {
 			ImageView emitterView = new ImageView(emitter);
 			customSaberBox.getChildren().set(0, emitterView);
 			saberIsOn = false;
-			//MediaPlayer deactivate = new MediaPlayer(new Media("/SaberSounds/Blue/DeactivateBlue.mp3"));
-			//deactivate.play();
+			MediaPlayer deactivate = new MediaPlayer(customSaber.getDeactivate());
+			deactivate.play();
+			hum.stop();
 		}
 		return saberIsOn;
 	}
