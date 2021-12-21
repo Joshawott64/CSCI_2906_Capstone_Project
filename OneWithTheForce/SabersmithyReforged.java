@@ -12,11 +12,7 @@ import java.util.*;
 
 public class SabersmithyReforged extends Main {
 	// Scenes
-	Scene smithyMenuScene;
-	Scene forgeScene;
-	Scene galleryScene;
-	Scene previewScene;
-	Scene editScene;
+	Scene smithyMenuScene, forgeScene, galleryScene, previewScene, editScene;
 	
 	// BorderPanes for saber preview and saber editing
 	BorderPane previewBorderPane, editBorderPane;
@@ -131,7 +127,7 @@ public class SabersmithyReforged extends Main {
 	static Image yellowCrystal = new Image("/Crystals/YellowCrystal.png");
 	
 	// Arraylist for storing all saber objects
-	ArrayList<Saber> allSabers = new ArrayList<>();
+	static ArrayList<Saber> allSabers = new ArrayList<>();
 	
 	// Construct default sabers
 	Saber anakinSaber = new Saber(true, "The Skywalker", "Blue", anakinBlue, 
