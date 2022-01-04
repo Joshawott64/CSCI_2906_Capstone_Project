@@ -1,5 +1,4 @@
 import java.net.URISyntaxException;
-
 import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 
@@ -135,7 +134,7 @@ public class Saber implements Cloneable {
 			case "Green":
 				return clash1 = new Media(getClass().getResource("/SaberSounds/Blue/Clash1Blue.mp3").toURI().toString());
 			case "Orange":
-				return clash1 = new Media(getClass().getResource("/SaberSounds/Blue/Clash1Blue.mp3").toURI().toString());
+				return clash1 = new Media(getClass().getResource("/SaberSounds/Orange/Clash1Orange.mp3").toURI().toString());
 			case "Purple":
 				return clash1 = new Media(getClass().getResource("/SaberSounds/Blue/Clash1Blue.mp3").toURI().toString());
 			case "Red":
@@ -143,7 +142,7 @@ public class Saber implements Cloneable {
 			case "Silver":
 				return clash1 = new Media(getClass().getResource("/SaberSounds/Silver/Clash1Silver.mp3").toURI().toString());
 			case "Yellow":
-				return clash1 = new Media(getClass().getResource("/SaberSounds/Blue/Clash1Blue.mp3").toURI().toString());
+				return clash1 = new Media(getClass().getResource("/SaberSounds/Yellow/Clash1Yellow.mp3").toURI().toString());
 		}
 		return clash1;
 	}
@@ -158,7 +157,7 @@ public class Saber implements Cloneable {
 				case "Green":
 					return clash2 = new Media(getClass().getResource("/SaberSounds/Blue/Clash2Blue.mp3").toURI().toString());
 				case "Orange":
-					return clash2 = new Media(getClass().getResource("/SaberSounds/Blue/Clash2Blue.mp3").toURI().toString());
+					return clash2 = new Media(getClass().getResource("/SaberSounds/Orange/Clash2Orange.mp3").toURI().toString());
 				case "Purple":
 					return clash2 = new Media(getClass().getResource("/SaberSounds/Blue/Clash2Blue.mp3").toURI().toString());
 				case "Red":
@@ -166,7 +165,7 @@ public class Saber implements Cloneable {
 				case "Silver":
 					return clash2 = new Media(getClass().getResource("/SaberSounds/Silver/Clash2Silver.mp3").toURI().toString());
 				case "Yellow":
-					return clash2 = new Media(getClass().getResource("/SaberSounds/Blue/Clash2Blue.mp3").toURI().toString());
+					return clash2 = new Media(getClass().getResource("/SaberSounds/Yellow/Clash2Yellow.mp3").toURI().toString());
 			}
 			return clash2;
 		}
@@ -181,7 +180,7 @@ public class Saber implements Cloneable {
 				case "Green":
 					return clash3 = new Media(getClass().getResource("/SaberSounds/Blue/Clash3Blue.mp3").toURI().toString());
 				case "Orange":
-					return clash3 = new Media(getClass().getResource("/SaberSounds/Blue/Clash3Blue.mp3").toURI().toString());
+					return clash3 = new Media(getClass().getResource("/SaberSounds/Orange/Clash3Orange.mp3").toURI().toString());
 				case "Purple":
 					return clash3 = new Media(getClass().getResource("/SaberSounds/Blue/Clash3Blue.mp3").toURI().toString());
 				case "Red":
@@ -189,7 +188,7 @@ public class Saber implements Cloneable {
 				case "Silver":
 					return clash3 = new Media(getClass().getResource("/SaberSounds/Silver/Clash3Silver.mp3").toURI().toString());
 				case "Yellow":
-					return clash3 = new Media(getClass().getResource("/SaberSounds/Blue/Clash3Blue.mp3").toURI().toString());
+					return clash3 = new Media(getClass().getResource("/SaberSounds/Yellow/Clash3Yellow.mp3").toURI().toString());
 			}
 			return clash3;
 		}
@@ -204,7 +203,7 @@ public class Saber implements Cloneable {
 				case "Green":
 					return deactivate = new Media(getClass().getResource("/SaberSounds/Blue/DeactivateBlue.mp3").toURI().toString());
 				case "Orange":
-					return deactivate = new Media(getClass().getResource("/SaberSounds/Blue/DeactivateBlue.mp3").toURI().toString());
+					return deactivate = new Media(getClass().getResource("/SaberSounds/Orange/DeactivateOrange.mp3").toURI().toString());
 				case "Purple":
 					return deactivate = new Media(getClass().getResource("/SaberSounds/Blue/DeactivateBlue.mp3").toURI().toString());
 				case "Red":
@@ -212,7 +211,7 @@ public class Saber implements Cloneable {
 				case "Silver":
 					return deactivate = new Media(getClass().getResource("/SaberSounds/Silver/DeactivateSilver.mp3").toURI().toString());
 				case "Yellow":
-					return deactivate = new Media(getClass().getResource("/SaberSounds/Blue/DeactivateBlue.mp3").toURI().toString());
+					return deactivate = new Media(getClass().getResource("/SaberSounds/Yellow/DeactivateYellow.mp3").toURI().toString());
 			}
 			return deactivate;
 		}
@@ -227,7 +226,7 @@ public class Saber implements Cloneable {
 				case "Green":
 					return deflect = new Media(getClass().getResource("/SaberSounds/Blue/DeflectBlue.mp3").toURI().toString());
 				case "Orange":
-					return deflect = new Media(getClass().getResource("/SaberSounds/Blue/DeflectBlue.mp3").toURI().toString());
+					return deflect = new Media(getClass().getResource("/SaberSounds/Orange/DeflectOrange.mp3").toURI().toString());
 				case "Purple":
 					return deflect = new Media(getClass().getResource("/SaberSounds/Blue/DeflectBlue.mp3").toURI().toString());
 				case "Red":
@@ -235,7 +234,7 @@ public class Saber implements Cloneable {
 				case "Silver":
 					return deflect = new Media(getClass().getResource("/SaberSounds/Silver/DeflectSilver.mp3").toURI().toString());
 				case "Yellow":
-					return deflect = new Media(getClass().getResource("/SaberSounds/Blue/DeflectBlue.mp3").toURI().toString());
+					return deflect = new Media(getClass().getResource("/SaberSounds/Yellow/DeflectYellow.mp3").toURI().toString());
 			}
 			return deflect;
 		}
@@ -250,7 +249,7 @@ public class Saber implements Cloneable {
 				case "Green":
 					return hum = new Media(getClass().getResource("/SaberSounds/Blue/HumBlue.mp3").toURI().toString());
 				case "Orange":
-					return hum = new Media(getClass().getResource("/SaberSounds/Blue/HumBlue.mp3").toURI().toString());
+					return hum = new Media(getClass().getResource("/SaberSounds/Orange/HumOrange.mp3").toURI().toString());
 				case "Purple":
 					return hum = new Media(getClass().getResource("/SaberSounds/Blue/HumBlue.mp3").toURI().toString());
 				case "Red":
@@ -258,7 +257,7 @@ public class Saber implements Cloneable {
 				case "Silver":
 					return hum = new Media(getClass().getResource("/SaberSounds/Silver/HumSilver.mp3").toURI().toString());
 				case "Yellow":
-					return hum = new Media(getClass().getResource("/SaberSounds/Blue/HumBlue.mp3").toURI().toString());
+					return hum = new Media(getClass().getResource("/SaberSounds/Yellow/HumYellow.mp3").toURI().toString());
 			}
 			return hum;
 		}
@@ -273,7 +272,7 @@ public class Saber implements Cloneable {
 				case "Green":
 					return ignite = new Media(getClass().getResource("/SaberSounds/Blue/IgniteBlue.mp3").toURI().toString());
 				case "Orange":
-					return ignite = new Media(getClass().getResource("/SaberSounds/Blue/IgniteBlue.mp3").toURI().toString());
+					return ignite = new Media(getClass().getResource("/SaberSounds/Orange/IgniteOrange.mp3").toURI().toString());
 				case "Purple":
 					return ignite = new Media(getClass().getResource("/SaberSounds/Blue/IgniteBlue.mp3").toURI().toString());
 				case "Red":
@@ -281,7 +280,7 @@ public class Saber implements Cloneable {
 				case "Silver":
 					return ignite = new Media(getClass().getResource("/SaberSounds/Silver/IgniteSilver.mp3").toURI().toString());
 				case "Yellow":
-					return ignite = new Media(getClass().getResource("/SaberSounds/Blue/IgniteBlue.mp3").toURI().toString());
+					return ignite = new Media(getClass().getResource("/SaberSounds/Yellow/IgniteYellow.mp3").toURI().toString());
 			}
 			return ignite;
 		}
@@ -296,7 +295,7 @@ public class Saber implements Cloneable {
 				case "Green":
 					return swoosh1 = new Media(getClass().getResource("/SaberSounds/Blue/Swoosh1Blue.mp3").toURI().toString());
 				case "Orange":
-					return swoosh1 = new Media(getClass().getResource("/SaberSounds/Blue/Swoosh1Blue.mp3").toURI().toString());
+					return swoosh1 = new Media(getClass().getResource("/SaberSounds/Orange/Swoosh1Orange.mp3").toURI().toString());
 				case "Purple":
 					return swoosh1 = new Media(getClass().getResource("/SaberSounds/Blue/Swoosh1Blue.mp3").toURI().toString());
 				case "Red":
@@ -304,7 +303,7 @@ public class Saber implements Cloneable {
 				case "Silver":
 					return swoosh1 = new Media(getClass().getResource("/SaberSounds/Silver/Swoosh1Silver.mp3").toURI().toString());
 				case "Yellow":
-					return swoosh1 = new Media(getClass().getResource("/SaberSounds/Blue/Swoosh1Blue.mp3").toURI().toString());
+					return swoosh1 = new Media(getClass().getResource("/SaberSounds/Yellow/Swoosh1Yellow.mp3").toURI().toString());
 			}
 			return swoosh1;
 		}
@@ -319,7 +318,7 @@ public class Saber implements Cloneable {
 				case "Green":
 					return swoosh2 = new Media(getClass().getResource("/SaberSounds/Blue/Swoosh2Blue.mp3").toURI().toString());
 				case "Orange":
-					return swoosh2 = new Media(getClass().getResource("/SaberSounds/Blue/Swoosh2Blue.mp3").toURI().toString());
+					return swoosh2 = new Media(getClass().getResource("/SaberSounds/Orange/Swoosh2Orange.mp3").toURI().toString());
 				case "Purple":
 					return swoosh2 = new Media(getClass().getResource("/SaberSounds/Blue/Swoosh2Blue.mp3").toURI().toString());
 				case "Red":
@@ -327,7 +326,7 @@ public class Saber implements Cloneable {
 				case "Silver":
 					return swoosh2 = new Media(getClass().getResource("/SaberSounds/Silver/Swoosh2Silver.mp3").toURI().toString());
 				case "Yellow":
-					return swoosh2 = new Media(getClass().getResource("/SaberSounds/Blue/Swoosh2Blue.mp3").toURI().toString());
+					return swoosh2 = new Media(getClass().getResource("/SaberSounds/Yellow/Swoosh2Yellow.mp3").toURI().toString());
 			}
 			return swoosh2;
 		}
@@ -342,7 +341,7 @@ public class Saber implements Cloneable {
 				case "Green":
 					return swoosh3 = new Media(getClass().getResource("/SaberSounds/Blue/Swoosh3Blue.mp3").toURI().toString());
 				case "Orange":
-					return swoosh3 = new Media(getClass().getResource("/SaberSounds/Blue/Swoosh3Blue.mp3").toURI().toString());
+					return swoosh3 = new Media(getClass().getResource("/SaberSounds/Orange/Swoosh3Orange.mp3").toURI().toString());
 				case "Purple":
 					return swoosh3 = new Media(getClass().getResource("/SaberSounds/Blue/Swoosh3Blue.mp3").toURI().toString());
 				case "Red":
@@ -350,7 +349,7 @@ public class Saber implements Cloneable {
 				case "Silver":
 					return swoosh3 = new Media(getClass().getResource("/SaberSounds/Silver/Swoosh3Silver.mp3").toURI().toString());
 				case "Yellow":
-					return swoosh3 = new Media(getClass().getResource("/SaberSounds/Blue/Swoosh3Blue.mp3").toURI().toString());
+					return swoosh3 = new Media(getClass().getResource("/SaberSounds/Yellow/Swoosh3Yellow.mp3").toURI().toString());
 			}
 			return swoosh3;
 		}
