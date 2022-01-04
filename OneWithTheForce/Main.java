@@ -6,6 +6,7 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.*;
@@ -14,14 +15,38 @@ import javafx.util.Duration;
 
 public class Main extends Application {
 	// Scenes
-	Scene mainMenuScene, optionsScene, startMenuScene, levelSelectScene, smithyMenuScene, 
-		forgeScene, galleryScene, previewScene, editScene;
+	Scene mainMenuScene, optionsScene, startMenuScene, levelSelectScene;
+
+	static Scene levelOneScene;
+
+	Scene smithyMenuScene;
+
+	Scene forgeScene;
+
+	Scene galleryScene;
+
+	Scene previewScene;
+
+	Scene editScene;
+
+	static Scene saberSelectScene;
 	
-	// BorderPanes for saber preview and saber editing
+	// BorderPanes for saber preview, saber editing, and saber selection
 	BorderPane previewBorderPane, editBorderPane;
+
+	static BorderPane saberSelectBorderPane, levelOneBorderPane;
+	
+	// FlowPane for saber select buttons
+	FlowPane saberSelectFlowPane;
 	
 	// Boolean for toggling saber
 	static boolean saberIsOn = false;
+	
+	// Boolean for starting levels
+	static Boolean startLevel = false;
+	
+	// Int for tracking selected level
+	int selectedLevel;
 	
 	// MediaPlayer for saber hum
 	static MediaPlayer hum;
@@ -130,7 +155,10 @@ public class Main extends Application {
 	static Image yellowCrystal = new Image("/Crystals/YellowCrystal.png");
 	
 	// Arraylist for storing all saber objects
-	static ArrayList<Saber> allSabers = new ArrayList<>();
+	ArrayList<Saber> allSabers = new ArrayList<>();
+	
+	static // Saber selected by player
+	Saber selectedSaber;
 	
 	// Construct default sabers
 	Saber anakinSaber = new Saber(true, "The Skywalker", "Blue", anakinBlue, 
@@ -223,6 +251,120 @@ public class Main extends Application {
 		startMenuScene = new Scene(startFlowPane, 1280, 720);
 		
 		
+		/* LEVEL SELECT SCENE */
+		BorderPane levelSelectBorderPane = new BorderPane();
+		FlowPane levelSelectFlowPane = new FlowPane(100, 100);
+		levelSelectFlowPane.setPadding(new Insets(50, 150, 50, 150));
+		
+		// Level select title
+		HBox levelSelectTitleBox = new HBox(new Text("Select a Level"));
+		levelSelectTitleBox.setAlignment(Pos.CENTER);
+		
+		// Navigate back to start menu
+		Button btBackLevelSelect = new Button("<--");
+		btBackLevelSelect.setOnAction(e -> primaryStage.setScene(startMenuScene));
+		HBox levelSelectButtonBox = new HBox();
+		levelSelectButtonBox.setAlignment(Pos.TOP_LEFT);
+		levelSelectButtonBox.getChildren().add(btBackLevelSelect);
+		
+		// Display levels
+		Button btLevelOne = new Button();
+		btLevelOne.setPrefSize(200, 200);
+		btLevelOne.setOnAction(e -> {
+			selectedLevel = 1;
+			selectSaber(primaryStage, allSabers, saberSelectFlowPane, selectedLevel);
+		});
+		Label lblLevelOne = new Label("Level 1", btLevelOne);
+		lblLevelOne.setContentDisplay(ContentDisplay.TOP);
+		
+		Button btLevelTwo = new Button();
+		btLevelTwo.setPrefSize(200, 200);
+		Label lblLevelTwo = new Label("Level 2", btLevelTwo);
+		lblLevelTwo.setContentDisplay(ContentDisplay.TOP);
+		
+		Button btLevelThree = new Button();
+		btLevelThree.setPrefSize(200, 200);
+		Label lblLevelThree = new Label("Level 3", btLevelThree);
+		lblLevelThree.setContentDisplay(ContentDisplay.TOP);
+		
+		Button btLevelFour = new Button();
+		btLevelFour.setPrefSize(200, 200);
+		Label lblLevelFour = new Label("Level 4", btLevelFour);
+		lblLevelFour.setContentDisplay(ContentDisplay.TOP);
+		
+		Button btLevelFive = new Button();
+		btLevelFive.setPrefSize(200, 200);
+		Label lblLevelFive = new Label("Level 5", btLevelFive);
+		lblLevelFive.setContentDisplay(ContentDisplay.TOP);
+		
+		Button btLevelSix = new Button();
+		btLevelSix.setPrefSize(200, 200);
+		Label lblLevelSix = new Label("Level 6", btLevelSix);
+		lblLevelSix.setContentDisplay(ContentDisplay.TOP);
+		
+		// Add levels to FlowPane
+		levelSelectFlowPane.getChildren().addAll(btLevelOne, lblLevelOne, btLevelTwo, 
+				lblLevelTwo, btLevelThree, lblLevelThree, btLevelFour, lblLevelFour, 
+				btLevelFive, lblLevelFive, btLevelSix, lblLevelSix);
+		
+		levelSelectBorderPane.setTop(levelSelectTitleBox);
+		levelSelectBorderPane.setLeft(levelSelectButtonBox);
+		levelSelectBorderPane.setCenter(levelSelectFlowPane);
+		
+		// Create scene
+		levelSelectScene = new Scene(levelSelectBorderPane, 1280, 720);
+		
+		
+		/* SABER SELECT SCENE */
+		saberSelectBorderPane = new BorderPane();
+		saberSelectFlowPane = new FlowPane(100, 100);
+		saberSelectFlowPane.setPadding(new Insets(50, 150, 50, 150));
+		
+		// Place saberSelectFlowPane in a ScrollPane
+		ScrollPane saberSelectScrollPane = new ScrollPane(saberSelectFlowPane);
+		saberSelectScrollPane.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
+		saberSelectScrollPane.setFitToWidth(true);
+		saberSelectScrollPane.setFitToHeight(true);
+		
+		// Saber select title
+		HBox saberSelectTitleBox = new HBox(new Text("Select a Saber"));
+		saberSelectTitleBox.setAlignment(Pos.CENTER);
+		
+		// Navigate back to level select
+		Button btBackSaberSelect = new Button("<--");
+		btBackSaberSelect.setOnAction(e -> primaryStage.setScene(levelSelectScene));
+		HBox saberSelectButtonBox = new HBox(btBackSaberSelect);
+		saberSelectButtonBox.setAlignment(Pos.TOP_LEFT);
+		
+		saberSelectBorderPane.setTop(saberSelectTitleBox);
+		saberSelectBorderPane.setLeft(saberSelectButtonBox);
+		saberSelectBorderPane.setCenter(saberSelectScrollPane);
+		
+		// Create scene
+		saberSelectScene = new Scene(saberSelectBorderPane ,1280, 720);
+		
+		
+		
+		
+		/*
+		 * -----------
+		 *  LEVEL ONE
+		 * -----------
+		 */
+
+		levelOneBorderPane = new BorderPane();
+		
+		// Create scene
+		levelOneScene = new Scene(levelOneBorderPane, 1280, 720);
+		
+		
+		
+		/*
+		 * ----------------------
+		 *  SABERSMITHY REFORGED
+		 * ----------------------
+		 */
+		
 		/* SMITHY MAIN MENU */
 		FlowPane smithyFlowPane = new FlowPane(Orientation.VERTICAL);
 		smithyFlowPane.setStyle("-fx-background-color: black");
@@ -248,11 +390,17 @@ public class Main extends Application {
 		btGallery.setPrefSize(150, 100);
 		btGallery.setOnAction(e -> primaryStage.setScene(galleryScene));
 		
+		// Navigate to start menu
+		Button btBackSmithy = new Button("<--");
+		btBackSmithy.setPrefSize(100, 75);
+		btBack.setAlignment(Pos.CENTER);
+		btBackSmithy.setOnAction(e -> primaryStage.setScene(startMenuScene));
+		
 		HBox smithyButtonBox = new HBox(200);
 		smithyButtonBox.setAlignment(Pos.CENTER);
 		smithyButtonBox.getChildren().addAll(btForge, btGallery);
 		
-		smithyFlowPane.getChildren().addAll(smithyTitleBox, smithyButtonBox);
+		smithyFlowPane.getChildren().addAll(smithyTitleBox, smithyButtonBox, btBackSmithy);
 		
 		// Set primary stage
 		smithyMenuScene = new Scene(smithyFlowPane, 1280, 720);
@@ -1318,5 +1466,118 @@ public class Main extends Application {
 			hum.stop();
 		}
 		return saberIsOn;
+	}
+	
+	// Saber select for level
+	public static void selectSaber(Stage primaryStage, ArrayList<Saber> allSabers, 
+			FlowPane saberSelectFlowPane, int selectedLevel) {
+		// Set stage
+		primaryStage.setScene(saberSelectScene);
+		
+		// Begin level
+		Button btBegin = new Button("Begin");
+		btBegin.setOnAction(e -> {
+			switch (selectedLevel) {
+				case 1:
+					primaryStage.setScene(levelOneScene);
+					beginLevelOne();
+					break;
+				case 2:
+					System.out.println("Level 2 is currently unavailable");
+					break;
+				case 3:
+					System.out.println("Level 3 is currently unavailable");
+					break;
+				case 4:
+					System.out.println("Level 4 is currently unavailable");
+					break;
+				case 5:
+					System.out.println("Level 5 is currently unavailable");
+					break;
+				case 6:
+					System.out.println("Level 6 is currently unavailable");
+					break;
+			}
+		});
+		
+		saberSelectBorderPane.setBottom(btBegin);
+		
+		// Clear FlowPane
+		saberSelectFlowPane.getChildren().clear();
+		
+		// Display all sabers
+		for (int i = 0; i < allSabers.size(); i++) {
+			VBox saberBox = new VBox();
+			ImageView emitter = new ImageView(allSabers.get(i).getEmitter());
+			ImageView guard = new ImageView(allSabers.get(i).getGuard());
+			ImageView bladeSwitch = new ImageView(allSabers.get(i).getBladeSwitch());
+			ImageView pommel = new ImageView(allSabers.get(i).getPommel());
+			saberBox.getChildren().addAll(emitter, guard, bladeSwitch, pommel);
+					
+			HBox formatBox = new HBox(20);
+			formatBox.getChildren().add(saberBox);
+			formatBox.setStyle("-fx-border-style: solid inside;" + "-fx-border-width: 2;");
+			formatBox.setPrefSize(200, 200);
+			formatBox.setMaxSize(200, 200);
+					
+			// Dispaly saber's color
+			switch (allSabers.get(i).getColor()) {
+				case "Black":
+					formatBox.getChildren().add(new ImageView(blackCrystal));
+					break;
+				case "Blue":
+					formatBox.getChildren().add(new ImageView(blueCrystal));
+					break;
+				case "Green":
+					formatBox.getChildren().add(new ImageView(greenCrystal));
+					break;
+				case "Orange":
+					formatBox.getChildren().add(new ImageView(orangeCrystal));
+					break;
+				case "Purple":
+					formatBox.getChildren().add(new ImageView(purpleCrystal));
+					break;
+				case "Red":
+					formatBox.getChildren().add(new ImageView(redCrystal));
+					break;
+				case "Silver":
+					formatBox.getChildren().add(new ImageView(silverCrystal));
+					break;
+				case "Yellow":
+					formatBox.getChildren().add(new ImageView(yellowCrystal));
+					break;
+			}
+					
+			Button btSaber = new Button();
+			btSaber.setGraphic(formatBox);
+			int f = i;
+			btSaber.setOnAction(e -> {
+				selectedSaber = allSabers.get(f);
+			});
+			Label lblSaber = new Label(allSabers.get(i).getName(), btSaber);
+			lblSaber.setContentDisplay(ContentDisplay.TOP);
+					
+			saberSelectFlowPane.getChildren().addAll(btSaber, lblSaber);
+		}
+	}
+	
+	public static void beginLevelOne() {
+		Image selectedColoredEmitter = selectedSaber.getColoredEmitter();
+		Image selectedGuard = selectedSaber.getGuard();
+		Image selectedSwitch = selectedSaber.getBladeSwitch();
+		Image selectedPommel = selectedSaber.getPommel();
+		
+		VBox selectedSaberBox = new VBox();
+		selectedSaberBox.getChildren().addAll(new ImageView(selectedColoredEmitter), 
+				new ImageView(selectedGuard), new ImageView(selectedSwitch), 
+				new ImageView(selectedPommel));
+		
+		WritableImage test = selectedSaberBox.snapshot(new SnapshotParameters(), null);
+		
+		ImageView a = new ImageView(test);
+		
+		selectedSaberBox.setAlignment(Pos.CENTER);
+		
+		levelOneBorderPane.setCenter(selectedSaberBox);
 	}
 }
