@@ -6,7 +6,6 @@ import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
 import javafx.scene.layout.*;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.*;
@@ -15,20 +14,10 @@ import javafx.util.Duration;
 
 public class Main extends Application {
 	// Scenes
-	Scene mainMenuScene, optionsScene, startMenuScene, levelSelectScene;
+	Scene mainMenuScene, optionsScene, startMenuScene, levelSelectScene, 
+		smithyMenuScene, forgeScene, galleryScene, previewScene, editScene;
 
 	static Scene levelOneScene;
-
-	Scene smithyMenuScene;
-
-	Scene forgeScene;
-
-	Scene galleryScene;
-
-	Scene previewScene;
-
-	Scene editScene;
-
 	static Scene saberSelectScene;
 	
 	// BorderPanes for saber preview, saber editing, and saber selection
@@ -48,8 +37,9 @@ public class Main extends Application {
 	// Int for tracking selected level
 	int selectedLevel;
 	
-	// MediaPlayer for saber hum
-	static MediaPlayer hum;
+	// MediaPlayers for saber sounds
+	static MediaPlayer clash1, clash2, clash3, deactivate, deflect, hum, 
+		ignite, swoosh1, swoosh2, swoosh3;
 	
 	// Import saber parts
 	static Image anakinEmitter = new Image("/Saber Parts/AnakinEmitter.png");
@@ -157,8 +147,8 @@ public class Main extends Application {
 	// Arraylist for storing all saber objects
 	ArrayList<Saber> allSabers = new ArrayList<>();
 	
-	static // Saber selected by player
-	Saber selectedSaber;
+	// Saber selected by player
+	static Saber selectedSaber;
 	
 	// Construct default sabers
 	Saber anakinSaber = new Saber(true, "The Skywalker", "Blue", anakinBlue, 
@@ -319,6 +309,9 @@ public class Main extends Application {
 		saberSelectBorderPane = new BorderPane();
 		saberSelectFlowPane = new FlowPane(100, 100);
 		saberSelectFlowPane.setPadding(new Insets(50, 150, 50, 150));
+		
+		// Selected saber by default
+		selectedSaber = allSabers.get(0);
 		
 		// Place saberSelectFlowPane in a ScrollPane
 		ScrollPane saberSelectScrollPane = new ScrollPane(saberSelectFlowPane);
@@ -860,7 +853,7 @@ public class Main extends Application {
 		Button btClash1 = new Button("Clash1");
 		btClash1.setOnAction(e -> {
 			try {
-				MediaPlayer clash1 = new MediaPlayer(saber.getClash1());
+				clash1 = new MediaPlayer(saber.getClash1());
 				clash1.play();
 			} catch (URISyntaxException e1) {
 				e1.printStackTrace();
@@ -869,7 +862,7 @@ public class Main extends Application {
 		Button btClash2 = new Button("Clash2");
 		btClash2.setOnAction(e -> {
 			try {
-				MediaPlayer clash2 = new MediaPlayer(saber.getClash2());
+				clash2 = new MediaPlayer(saber.getClash2());
 				clash2.play();
 			} catch (URISyntaxException e1) {
 				e1.printStackTrace();
@@ -878,7 +871,7 @@ public class Main extends Application {
 		Button btClash3 = new Button("Clash3");
 		btClash3.setOnAction(e -> {
 			try {
-				MediaPlayer clash3 = new MediaPlayer(saber.getClash3());
+				clash3 = new MediaPlayer(saber.getClash3());
 				clash3.play();
 			} catch (URISyntaxException e1) {
 				e1.printStackTrace();
@@ -887,7 +880,7 @@ public class Main extends Application {
 		Button btDeflect = new Button("Deflect");
 		btDeflect.setOnAction(e -> {
 			try {
-				MediaPlayer deflect = new MediaPlayer(saber.getDeflect());
+				deflect = new MediaPlayer(saber.getDeflect());
 				deflect.play();
 			} catch (URISyntaxException e1) {
 				e1.printStackTrace();
@@ -896,7 +889,7 @@ public class Main extends Application {
 		Button btSwoosh1 = new Button("Swoosh1");
 		btSwoosh1.setOnAction(e -> {
 			try {
-				MediaPlayer swoosh1 = new MediaPlayer(saber.getSwoosh1());
+				swoosh1 = new MediaPlayer(saber.getSwoosh1());
 				swoosh1.play();
 			} catch (URISyntaxException e1) {
 				e1.printStackTrace();
@@ -905,7 +898,7 @@ public class Main extends Application {
 		Button btSwoosh2 = new Button("Swoosh2");
 		btSwoosh2.setOnAction(e -> {
 			try {
-				MediaPlayer swoosh2 = new MediaPlayer(saber.getSwoosh2());
+				swoosh2 = new MediaPlayer(saber.getSwoosh2());
 				swoosh2.play();
 			} catch (URISyntaxException e1) {
 				e1.printStackTrace();
@@ -914,7 +907,7 @@ public class Main extends Application {
 		Button btSwoosh3 = new Button("Swoosh3");
 		btSwoosh3.setOnAction(e -> {
 			try {
-				MediaPlayer swoosh3 = new MediaPlayer(saber.getSwoosh3());
+				swoosh3 = new MediaPlayer(saber.getSwoosh3());
 				swoosh3.play();
 			} catch (URISyntaxException e1) {
 				e1.printStackTrace();
@@ -1447,7 +1440,7 @@ public class Main extends Application {
 			ImageView coloredEmitterView = new ImageView(coloredEmitter);
 			customSaberBox.getChildren().set(0, coloredEmitterView);
 			saberIsOn = true;
-			MediaPlayer ignite = new MediaPlayer(customSaber.getIgnite());
+			ignite = new MediaPlayer(customSaber.getIgnite());
 			ignite.play();
 			hum = new MediaPlayer(customSaber.getHum());
 			hum.setOnEndOfMedia(new Runnable() {
@@ -1461,7 +1454,7 @@ public class Main extends Application {
 			ImageView emitterView = new ImageView(emitter);
 			customSaberBox.getChildren().set(0, emitterView);
 			saberIsOn = false;
-			MediaPlayer deactivate = new MediaPlayer(customSaber.getDeactivate());
+			deactivate = new MediaPlayer(customSaber.getDeactivate());
 			deactivate.play();
 			hum.stop();
 		}
@@ -1480,7 +1473,12 @@ public class Main extends Application {
 			switch (selectedLevel) {
 				case 1:
 					primaryStage.setScene(levelOneScene);
+				try {
 					beginLevelOne();
+				} catch (URISyntaxException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 					break;
 				case 2:
 					System.out.println("Level 2 is currently unavailable");
@@ -1500,7 +1498,10 @@ public class Main extends Application {
 			}
 		});
 		
-		saberSelectBorderPane.setBottom(btBegin);
+		HBox saberSelectButtonBox = new HBox(btBegin);
+		saberSelectButtonBox.setAlignment(Pos.CENTER);
+		
+		saberSelectBorderPane.setBottom(saberSelectButtonBox);
 		
 		// Clear FlowPane
 		saberSelectFlowPane.getChildren().clear();
@@ -1561,7 +1562,7 @@ public class Main extends Application {
 		}
 	}
 	
-	public static void beginLevelOne() {
+	public static void beginLevelOne() throws URISyntaxException {
 		Image selectedColoredEmitter = selectedSaber.getColoredEmitter();
 		Image selectedGuard = selectedSaber.getGuard();
 		Image selectedSwitch = selectedSaber.getBladeSwitch();
@@ -1571,11 +1572,6 @@ public class Main extends Application {
 		selectedSaberBox.getChildren().addAll(new ImageView(selectedColoredEmitter), 
 				new ImageView(selectedGuard), new ImageView(selectedSwitch), 
 				new ImageView(selectedPommel));
-		
-		WritableImage test = selectedSaberBox.snapshot(new SnapshotParameters(), null);
-		
-		ImageView a = new ImageView(test);
-		
 		selectedSaberBox.setAlignment(Pos.CENTER);
 		
 		levelOneBorderPane.setCenter(selectedSaberBox);
