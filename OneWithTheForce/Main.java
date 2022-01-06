@@ -1,29 +1,177 @@
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import javafx.animation.AnimationTimer;
 import javafx.application.*;
 import javafx.geometry.*;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.*;
 import javafx.stage.*;
 import javafx.util.Duration;
 
 public class Main extends Application {
+	/*
+	 * --------------------------
+	 *  Level Fields and Methods
+	 * --------------------------
+	 */
+	
+	private HashMap<KeyCode, Boolean> keys = new HashMap<KeyCode, Boolean>();
+	
+	private ArrayList<Node> platforms = new ArrayList<Node>();
+	
+	private Pane appRoot = new Pane();
+	private Pane gameRoot = new Pane();
+	private Pane uiRoot = new Pane();
+	
+	private Node player;
+	private Point2D playerVelocity = new Point2D(0, 0);
+	private boolean canJump = true;
+	
+	private int levelWidth;
+	
+	private void initContent() {
+		Rectangle background = new Rectangle(1280, 720, Color.LIGHTBLUE);
+		
+		levelWidth = LevelData.LEVEL1[0].length() * 60;
+		
+		for (int i = 0; i < LevelData.LEVEL1.length; i++) {
+			String line = LevelData.LEVEL1[i];
+			for (int j = 0; j < line.length(); j++) {
+				switch (line.charAt(j)) {
+					case '0':
+						break;
+					case '1':
+						Node platform = createEntity(j*60, i*60, 60, 60, Color.BROWN);
+						platforms.add(platform);
+						break;
+				}
+			}
+		}
+		
+		player = createEntity(200, 435, 40, 40, Color.BLUE);
+		
+		player.translateXProperty().addListener((obs, old, newValue) -> {
+			int offset = newValue.intValue();
+			
+			if (offset > 640 && offset < levelWidth - 640) {
+				gameRoot.setLayoutX(-(offset - 640));
+			}
+		});
+		
+		appRoot.getChildren().addAll(background, gameRoot, uiRoot);
+	}
+	
+	private void update() {
+		if (isPressed(KeyCode.SPACE) && player.getTranslateY() >= 5) {
+			jumpPlayer();
+		}
+		
+		if (isPressed(KeyCode.A) && player.getTranslateX() >= 5) {
+			movePlayerX(-5);
+		}
+		
+		if (isPressed(KeyCode.D) && player.getTranslateX() + 40 <= levelWidth - 5) {
+			movePlayerX(5);
+		}
+		
+		if (playerVelocity.getY() < 10) {
+			playerVelocity = playerVelocity.add(0, 1);
+		}
+		
+		movePlayerY((int)playerVelocity.getY());
+	}
+	
+	private void movePlayerX(int value) {
+		boolean movingRight = value > 0;
+		
+		for (int i = 0; i < Math.abs(value); i++) {
+			for (Node platform : platforms) {
+				if (player.getBoundsInParent().intersects(platform.getBoundsInParent())) {
+					if (movingRight) {
+						if (player.getTranslateX() + 40 == platform.getTranslateX()) {
+							return;
+						}
+					}
+					else {
+						if (player.getTranslateX() == platform.getTranslateX() + 60) {
+							return;
+						}
+					}
+				}
+			}
+			player.setTranslateX(player.getTranslateX() + (movingRight ? 1 : -1));
+		}
+	}
+	
+	private void movePlayerY(int value) {
+		boolean movingDown = value > 0;
+		
+		for (int i = 0; i < Math.abs(value); i++) {
+			for (Node platform : platforms) {
+				if (player.getBoundsInParent().intersects(platform.getBoundsInParent())) {
+					if (movingDown) {
+						if (player.getTranslateY() + 40 == platform.getTranslateY()) {
+							canJump = true;
+							return;
+						}
+					}
+					else {
+						if (player.getTranslateY() == platform.getTranslateY() + 60) {
+							return;
+						}
+					}
+				}
+			}
+			player.setTranslateY(player.getTranslateY() + (movingDown ? 1 : -1));
+		}
+	}
+	
+	private void jumpPlayer() {
+		if (canJump) {
+			playerVelocity = playerVelocity.add(0, -30);
+			canJump = false;
+		}
+	}
+	
+	private Node createEntity(int x, int y, int w, int h, Color color) {
+		Rectangle entity = new Rectangle(w, h);
+		entity.setTranslateX(x);
+		entity.setTranslateY(y);
+		entity.setFill(color);
+		
+		gameRoot.getChildren().add(entity);
+		return entity;
+	}
+	
+	private boolean isPressed(KeyCode key) {
+		return keys.getOrDefault(key, false);
+	}
+	
+	/*
+	 * -------------
+	 *  Menu Fields
+	 * -------------
+	 */
+	
 	// Scenes
 	Scene mainMenuScene, optionsScene, startMenuScene, levelSelectScene, 
 		smithyMenuScene, forgeScene, galleryScene, previewScene, editScene;
-
 	static Scene levelOneScene;
 	static Scene saberSelectScene;
 	
 	// BorderPanes for saber preview, saber editing, and saber selection
 	BorderPane previewBorderPane, editBorderPane;
-
-	static BorderPane saberSelectBorderPane, levelOneBorderPane;
+	static BorderPane saberSelectBorderPane;
 	
 	// FlowPane for saber select buttons
 	FlowPane saberSelectFlowPane;
@@ -345,10 +493,19 @@ public class Main extends Application {
 		 * -----------
 		 */
 
-		levelOneBorderPane = new BorderPane();
-		
 		// Create scene
-		levelOneScene = new Scene(levelOneBorderPane, 1280, 720);
+		initContent();
+		levelOneScene = new Scene(appRoot);
+		levelOneScene.setOnKeyPressed(e -> keys.put(e.getCode(), true));
+		levelOneScene.setOnKeyReleased(e -> keys.put(e.getCode(), false));
+		
+		AnimationTimer timer = new AnimationTimer() {
+			@Override
+			public void handle(long now) {
+				update();
+			}
+		};
+		timer.start();
 		
 		
 		
@@ -1473,12 +1630,6 @@ public class Main extends Application {
 			switch (selectedLevel) {
 				case 1:
 					primaryStage.setScene(levelOneScene);
-				try {
-					beginLevelOne();
-				} catch (URISyntaxException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 					break;
 				case 2:
 					System.out.println("Level 2 is currently unavailable");
@@ -1560,20 +1711,5 @@ public class Main extends Application {
 					
 			saberSelectFlowPane.getChildren().addAll(btSaber, lblSaber);
 		}
-	}
-	
-	public static void beginLevelOne() throws URISyntaxException {
-		Image selectedColoredEmitter = selectedSaber.getColoredEmitter();
-		Image selectedGuard = selectedSaber.getGuard();
-		Image selectedSwitch = selectedSaber.getBladeSwitch();
-		Image selectedPommel = selectedSaber.getPommel();
-		
-		VBox selectedSaberBox = new VBox();
-		selectedSaberBox.getChildren().addAll(new ImageView(selectedColoredEmitter), 
-				new ImageView(selectedGuard), new ImageView(selectedSwitch), 
-				new ImageView(selectedPommel));
-		selectedSaberBox.setAlignment(Pos.CENTER);
-		
-		levelOneBorderPane.setCenter(selectedSaberBox);
 	}
 }
