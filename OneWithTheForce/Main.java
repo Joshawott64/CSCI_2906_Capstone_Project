@@ -1,7 +1,6 @@
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import javafx.animation.AnimationTimer;
 import javafx.application.*;
 import javafx.geometry.*;
@@ -40,7 +39,7 @@ public class Main extends Application {
 	private int levelWidth;
 	
 	private void initContent() {
-		Rectangle background = new Rectangle(1280, 720, Color.LIGHTBLUE);
+		Rectangle background = new Rectangle(1280, 720);
 		
 		levelWidth = LevelData.LEVEL1[0].length() * 60;
 		
@@ -58,13 +57,21 @@ public class Main extends Application {
 			}
 		}
 		
-		player = createEntity(200, 435, 40, 40, Color.BLUE);
+		player = createEntity(200, 0, 40, 40, Color.BLUE);
 		
 		player.translateXProperty().addListener((obs, old, newValue) -> {
 			int offset = newValue.intValue();
 			
 			if (offset > 640 && offset < levelWidth - 640) {
 				gameRoot.setLayoutX(-(offset - 640));
+			}
+		});
+		
+		player.translateYProperty().addListener((obs, old, newValue) -> {
+			int offset = newValue.intValue();
+			
+			if (offset > 450 && offset < levelWidth - 450) {
+				gameRoot.setLayoutY(-(offset - 450));
 			}
 		});
 		
@@ -91,6 +98,7 @@ public class Main extends Application {
 		movePlayerY((int)playerVelocity.getY());
 	}
 	
+	// ! FIX THE COLLISION DETECTION !
 	private void movePlayerX(int value) {
 		boolean movingRight = value > 0;
 		
