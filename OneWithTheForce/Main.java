@@ -28,6 +28,8 @@ public class Main extends Application {
 	
 	private ArrayList<Node> platforms = new ArrayList<Node>();
 	
+	private ArrayList<Node> platformEnds = new ArrayList<Node>();
+	
 	private Pane appRoot = new Pane();
 	private Pane gameRoot = new Pane();
 	private Pane uiRoot = new Pane();
@@ -50,14 +52,18 @@ public class Main extends Application {
 					case '0':
 						break;
 					case '1':
-						Node platform = createEntity(j*60, i*60, 60, 60, Color.BROWN);
+						Node platform = createEntity(j*60, i*60, 60, 60, Color.BROWN, false);
 						platforms.add(platform);
+						break;
+					case '2':
+						Node platformEnd = createEntity(j*60, i*60, 60, 60, Color.WHITE, false);
+						platformEnds.add(platformEnd);
 						break;
 				}
 			}
 		}
 		
-		player = createEntity(200, 0, 40, 40, Color.BLUE);
+		player = createEntity(200, 0, 40, 40, Color.BLUE, true);
 		
 		player.translateXProperty().addListener((obs, old, newValue) -> {
 			int offset = newValue.intValue();
@@ -103,27 +109,45 @@ public class Main extends Application {
 		boolean movingRight = value > 0;
 		
 		for (int i = 0; i < Math.abs(value); i++) {
+			// Platforms
 			for (Node platform : platforms) {
 				if (player.getBoundsInParent().intersects(platform.getBoundsInParent())) {
 					if (movingRight) {
 						if (player.getTranslateX() + 40 == platform.getTranslateX()) {
-							return;
+							//return;
 						}
 					}
 					else {
 						if (player.getTranslateX() == platform.getTranslateX() + 60) {
+							//return;
+						}
+					}
+				}
+			}
+			
+			// Platform ends
+			for (Node platformEnd : platformEnds) {
+				if (player.getBoundsInParent().intersects(platformEnd.getBoundsInParent())) {
+					if (movingRight) {
+						if (player.getTranslateX() + 40 == platformEnd.getTranslateX()) {
+							return;
+						}
+					}
+					else {
+						if (player.getTranslateX() == platformEnd.getTranslateX() + 60) {
 							return;
 						}
 					}
 				}
 			}
+			
 			player.setTranslateX(player.getTranslateX() + (movingRight ? 1 : -1));
 		}
 	}
 	
 	private void movePlayerY(int value) {
 		boolean movingDown = value > 0;
-		
+		// Platforms
 		for (int i = 0; i < Math.abs(value); i++) {
 			for (Node platform : platforms) {
 				if (player.getBoundsInParent().intersects(platform.getBoundsInParent())) {
@@ -140,6 +164,24 @@ public class Main extends Application {
 					}
 				}
 			}
+			
+			// Platform ends
+			for (Node platformEnd : platformEnds) {
+				if (player.getBoundsInParent().intersects(platformEnd.getBoundsInParent())) {
+					if (movingDown) {
+						if (player.getTranslateY() + 40 == platformEnd.getTranslateY()) {
+							canJump = true;
+							return;
+						}
+					}
+					else {
+						if (player.getTranslateY() == platformEnd.getTranslateY() + 60) {
+							return;
+						}
+					}
+				}
+			}
+			
 			player.setTranslateY(player.getTranslateY() + (movingDown ? 1 : -1));
 		}
 	}
@@ -151,14 +193,39 @@ public class Main extends Application {
 		}
 	}
 	
-	private Node createEntity(int x, int y, int w, int h, Color color) {
-		Rectangle entity = new Rectangle(w, h);
-		entity.setTranslateX(x);
-		entity.setTranslateY(y);
-		entity.setFill(color);
+	private Node createEntity(int x, int y, int w, int h, Color color, boolean isPlayer) {
+		if (isPlayer) {
+			StackPane test = new StackPane();
+			
+			Rectangle entity = new Rectangle(w, h);
+			entity.setTranslateX(x);
+			entity.setTranslateY(y);
+			entity.setFill(color);
+			
+			VBox saberBox = new VBox();
+			saberBox.getChildren().addAll(new ImageView(selectedSaber.getColoredEmitter()), 
+					new ImageView(selectedSaber.getGuard()), 
+					new ImageView(selectedSaber.getBladeSwitch()), 
+					new ImageView(selectedSaber.getPommel()));
+			
+			VBox entityBox = new VBox(10);
+			entityBox.getChildren().addAll(entity, saberBox);
+			
+			//test.getChildren().addAll(entity, saberBox);
+			
+			gameRoot.getChildren().add(entityBox);
+			return entityBox;
+		}
+		else {
+			Rectangle entity = new Rectangle(w, h);
+			entity.setTranslateX(x);
+			entity.setTranslateY(y);
+			entity.setFill(color);
+
+			gameRoot.getChildren().add(entity);
+			return entity;
+		}
 		
-		gameRoot.getChildren().add(entity);
-		return entity;
 	}
 	
 	private boolean isPressed(KeyCode key) {
