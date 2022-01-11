@@ -40,7 +40,9 @@ public class Main extends Application {
 	
 	private int levelWidth;
 	
-	private void initContent() {
+	private VBox saberBox;
+	
+	private void initContent() throws URISyntaxException {
 		Rectangle background = new Rectangle(1280, 720);
 		
 		levelWidth = LevelData.LEVEL1[0].length() * 60;
@@ -52,18 +54,18 @@ public class Main extends Application {
 					case '0':
 						break;
 					case '1':
-						Node platform = createEntity(j*60, i*60, 60, 60, Color.BROWN, false);
+						Node platform = createEntity(j*60, i*60, 60, 60, Color.BROWN);
 						platforms.add(platform);
 						break;
 					case '2':
-						Node platformEnd = createEntity(j*60, i*60, 60, 60, Color.WHITE, false);
+						Node platformEnd = createEntity(j*60, i*60, 60, 60, Color.WHITE);
 						platformEnds.add(platformEnd);
 						break;
 				}
 			}
 		}
 		
-		player = createEntity(200, 0, 40, 40, Color.BLUE, true);
+		player = createEntity(200, 0, 40, 40, Color.BLUE);
 		
 		player.translateXProperty().addListener((obs, old, newValue) -> {
 			int offset = newValue.intValue();
@@ -82,6 +84,38 @@ public class Main extends Application {
 		});
 		
 		appRoot.getChildren().addAll(background, gameRoot, uiRoot);
+		
+		saberBox = new VBox(-1);
+		ImageView coloredEmitter = new ImageView(selectedSaber.getColoredEmitter());
+		coloredEmitter.setFitWidth(27);
+		coloredEmitter.setPreserveRatio(true);
+		ImageView guard = new ImageView(selectedSaber.getGuard());
+		guard.setFitWidth(27);
+		guard.setPreserveRatio(true);
+		ImageView bladeSwitch = new ImageView(selectedSaber.getBladeSwitch());
+		bladeSwitch.setFitWidth(27);
+		bladeSwitch.setPreserveRatio(true);
+		ImageView pommel = new ImageView(selectedSaber.getPommel());
+		pommel.setFitWidth(27);
+		pommel.setPreserveRatio(true);
+		saberBox.getChildren().addAll(coloredEmitter, guard, bladeSwitch, pommel);
+		
+		ignite = new MediaPlayer(selectedSaber.getIgnite());
+		ignite.play();
+		
+		hum = new MediaPlayer(selectedSaber.getHum());
+		hum.setVolume(0.25);
+		hum.setOnEndOfMedia(new Runnable() {
+			public void run() {
+				hum.seek(Duration.ZERO);
+			}
+		});
+		hum.play();
+		
+		saberBox.setTranslateX(200);
+		saberBox.setTranslateY(-200);
+		
+		gameRoot.getChildren().add(saberBox);
 	}
 	
 	private void update() {
@@ -91,10 +125,12 @@ public class Main extends Application {
 		
 		if (isPressed(KeyCode.A) && player.getTranslateX() >= 5) {
 			movePlayerX(-5);
+			saberBox.setScaleX(-1);
 		}
 		
 		if (isPressed(KeyCode.D) && player.getTranslateX() + 40 <= levelWidth - 5) {
 			movePlayerX(5);
+			saberBox.setScaleX(1);
 		}
 		
 		if (playerVelocity.getY() < 10) {
@@ -142,6 +178,7 @@ public class Main extends Application {
 			}
 			
 			player.setTranslateX(player.getTranslateX() + (movingRight ? 1 : -1));
+			saberBox.setTranslateX(saberBox.getTranslateX() + (movingRight ? 1 : -1));
 		}
 	}
 	
@@ -183,6 +220,7 @@ public class Main extends Application {
 			}
 			
 			player.setTranslateY(player.getTranslateY() + (movingDown ? 1 : -1));
+			saberBox.setTranslateY(saberBox.getTranslateY() + (movingDown ? 1 : -1));
 		}
 	}
 	
@@ -193,38 +231,14 @@ public class Main extends Application {
 		}
 	}
 	
-	private Node createEntity(int x, int y, int w, int h, Color color, boolean isPlayer) {
-		if (isPlayer) {
-			StackPane test = new StackPane();
-			
-			Rectangle entity = new Rectangle(w, h);
-			entity.setTranslateX(x);
-			entity.setTranslateY(y);
-			entity.setFill(color);
-			
-			VBox saberBox = new VBox();
-			saberBox.getChildren().addAll(new ImageView(selectedSaber.getColoredEmitter()), 
-					new ImageView(selectedSaber.getGuard()), 
-					new ImageView(selectedSaber.getBladeSwitch()), 
-					new ImageView(selectedSaber.getPommel()));
-			
-			VBox entityBox = new VBox(10);
-			entityBox.getChildren().addAll(entity, saberBox);
-			
-			//test.getChildren().addAll(entity, saberBox);
-			
-			gameRoot.getChildren().add(entityBox);
-			return entityBox;
-		}
-		else {
-			Rectangle entity = new Rectangle(w, h);
-			entity.setTranslateX(x);
-			entity.setTranslateY(y);
-			entity.setFill(color);
+	private Node createEntity(int x, int y, int w, int h, Color color) {
+		Rectangle entity = new Rectangle(w, h);
+		entity.setTranslateX(x);
+		entity.setTranslateY(y);
+		entity.setFill(color);
 
-			gameRoot.getChildren().add(entity);
-			return entity;
-		}
+		gameRoot.getChildren().add(entity);
+		return entity;
 		
 	}
 	
@@ -412,19 +426,18 @@ public class Main extends Application {
 		mainTitleBox.getChildren().add(new Text("One With The Force"));
 		
 		// Navigate to start
-		Button btStart = new Button("Start");
+		Button btStart = new Button();
+		btStart.setGraphic(new ImageView("/GUI Components/StartButton.png"));
 		btStart.setOnAction(e -> primaryStage.setScene(startMenuScene));
 		
-		// Navigate to options
-		Button btOptions = new Button("Options");
-		
 		// Quit game
-		Button btQuit = new Button("Quit");
+		Button btQuit = new Button();
+		btQuit.setGraphic(new ImageView("/GUI Components/QuitButton.png"));
 		btQuit.setOnAction(e -> System.exit(0));
 		
-		VBox mainButtonBox = new VBox(20);
+		VBox mainButtonBox = new VBox(40);
 		mainButtonBox.setAlignment(Pos.CENTER);
-		mainButtonBox.getChildren().addAll(btStart, btOptions, btQuit);
+		mainButtonBox.getChildren().addAll(btStart, btQuit);
 		
 		mainFlowPane.getChildren().addAll(mainTitleBox, mainButtonBox);
 		
@@ -443,18 +456,21 @@ public class Main extends Application {
 		startTitleBox.getChildren().add(new Text("Select One"));
 		
 		// Navigate to levels
-		Button btLevels = new Button("Levels");
+		Button btLevels = new Button();
+		btLevels.setGraphic(new ImageView("/GUI Components/LevelsButton.png"));
 		btLevels.setOnAction(e -> primaryStage.setScene(levelSelectScene));
 		
 		// Navigate to Sabersmithy
-		Button btSmithy = new Button("Sabersmithy");
+		Button btSmithy = new Button();
+		btSmithy.setGraphic(new ImageView("/GUI Components/SmithyButton.png"));
 		btSmithy.setOnAction(e -> primaryStage.setScene(smithyMenuScene));
 		
 		// Navigate to main menu
-		Button btBack = new Button ("Back");
+		Button btBack = new Button ();
+		btBack.setGraphic(new ImageView("/GUI Components/BackArrowButton.png"));
 		btBack.setOnAction(e -> primaryStage.setScene(mainMenuScene));
 		
-		VBox startButtonBox = new VBox(20);
+		VBox startButtonBox = new VBox(40);
 		startButtonBox.setAlignment(Pos.CENTER);
 		startButtonBox.getChildren().addAll(btLevels, btSmithy, btBack);
 		
@@ -474,7 +490,8 @@ public class Main extends Application {
 		levelSelectTitleBox.setAlignment(Pos.CENTER);
 		
 		// Navigate back to start menu
-		Button btBackLevelSelect = new Button("<--");
+		Button btBackLevelSelect = new Button();
+		btBackLevelSelect.setGraphic(new ImageView("/GUI Components/BackArrowButton.png"));
 		btBackLevelSelect.setOnAction(e -> primaryStage.setScene(startMenuScene));
 		HBox levelSelectButtonBox = new HBox();
 		levelSelectButtonBox.setAlignment(Pos.TOP_LEFT);
@@ -492,26 +509,31 @@ public class Main extends Application {
 		
 		Button btLevelTwo = new Button();
 		btLevelTwo.setPrefSize(200, 200);
+		btLevelTwo.setGraphic(new ImageView("/GUI Components/HiddenLevelPreview.png"));
 		Label lblLevelTwo = new Label("Level 2", btLevelTwo);
 		lblLevelTwo.setContentDisplay(ContentDisplay.TOP);
 		
 		Button btLevelThree = new Button();
 		btLevelThree.setPrefSize(200, 200);
+		btLevelThree.setGraphic(new ImageView("/GUI Components/HiddenLevelPreview.png"));
 		Label lblLevelThree = new Label("Level 3", btLevelThree);
 		lblLevelThree.setContentDisplay(ContentDisplay.TOP);
 		
 		Button btLevelFour = new Button();
 		btLevelFour.setPrefSize(200, 200);
+		btLevelFour.setGraphic(new ImageView("/GUI Components/HiddenLevelPreview.png"));
 		Label lblLevelFour = new Label("Level 4", btLevelFour);
 		lblLevelFour.setContentDisplay(ContentDisplay.TOP);
 		
 		Button btLevelFive = new Button();
 		btLevelFive.setPrefSize(200, 200);
+		btLevelFive.setGraphic(new ImageView("/GUI Components/HiddenLevelPreview.png"));
 		Label lblLevelFive = new Label("Level 5", btLevelFive);
 		lblLevelFive.setContentDisplay(ContentDisplay.TOP);
 		
 		Button btLevelSix = new Button();
 		btLevelSix.setPrefSize(200, 200);
+		btLevelSix.setGraphic(new ImageView("/GUI Components/HiddenLevelPreview.png"));
 		Label lblLevelSix = new Label("Level 6", btLevelSix);
 		lblLevelSix.setContentDisplay(ContentDisplay.TOP);
 		
@@ -552,6 +574,47 @@ public class Main extends Application {
 		HBox saberSelectButtonBox = new HBox(btBackSaberSelect);
 		saberSelectButtonBox.setAlignment(Pos.TOP_LEFT);
 		
+		// Begin level
+		Button btBegin = new Button("Begin");
+		btBegin.setOnAction(e -> {
+			switch (selectedLevel) {
+				case 1:
+					try {
+						initContent();
+					} catch (URISyntaxException e1) {
+						e1.printStackTrace();
+					}
+					AnimationTimer timer = new AnimationTimer() {
+						@Override
+						public void handle(long now) {
+							update();
+						}
+					};
+					timer.start();
+					primaryStage.setScene(levelOneScene);
+					break;
+				case 2:
+					System.out.println("Level 2 is currently unavailable");
+					break;
+				case 3:
+					System.out.println("Level 3 is currently unavailable");
+					break;
+				case 4:
+					System.out.println("Level 4 is currently unavailable");
+					break;
+				case 5:
+					System.out.println("Level 5 is currently unavailable");
+					break;
+				case 6:
+					System.out.println("Level 6 is currently unavailable");
+					break;
+			}
+		});
+				
+		HBox beginButtonBox = new HBox(btBegin);
+		beginButtonBox.setAlignment(Pos.CENTER);
+				
+		saberSelectBorderPane.setBottom(beginButtonBox);
 		saberSelectBorderPane.setTop(saberSelectTitleBox);
 		saberSelectBorderPane.setLeft(saberSelectButtonBox);
 		saberSelectBorderPane.setCenter(saberSelectScrollPane);
@@ -569,18 +632,12 @@ public class Main extends Application {
 		 */
 
 		// Create scene
-		initContent();
+		
 		levelOneScene = new Scene(appRoot);
 		levelOneScene.setOnKeyPressed(e -> keys.put(e.getCode(), true));
 		levelOneScene.setOnKeyReleased(e -> keys.put(e.getCode(), false));
 		
-		AnimationTimer timer = new AnimationTimer() {
-			@Override
-			public void handle(long now) {
-				update();
-			}
-		};
-		timer.start();
+		
 		
 		
 		
@@ -606,18 +663,18 @@ public class Main extends Application {
 		smithyTitleBox.getChildren().addAll(smithyTitleView, reforgedView);
 		
 		// Navigate to forge
-		Button btForge = new Button("Forge");
-		btForge.setPrefSize(150, 100);
+		Button btForge = new Button();
+		btForge.setGraphic(new ImageView("/GUI Components/ForgeButton.png"));
 		btForge.setOnAction(e -> primaryStage.setScene(forgeScene));
 		
 		// Navigate to gallery
-		Button btGallery = new Button("Gallery");
-		btGallery.setPrefSize(150, 100);
+		Button btGallery = new Button();
+		btGallery.setGraphic(new ImageView("/GUI Components/GalleryButton.png"));
 		btGallery.setOnAction(e -> primaryStage.setScene(galleryScene));
 		
 		// Navigate to start menu
-		Button btBackSmithy = new Button("<--");
-		btBackSmithy.setPrefSize(100, 75);
+		Button btBackSmithy = new Button();
+		btBackSmithy.setGraphic(new ImageView("/GUI Components/BackArrowButton.png"));
 		btBack.setAlignment(Pos.CENTER);
 		btBackSmithy.setOnAction(e -> primaryStage.setScene(startMenuScene));
 		
@@ -1699,35 +1756,7 @@ public class Main extends Application {
 		// Set stage
 		primaryStage.setScene(saberSelectScene);
 		
-		// Begin level
-		Button btBegin = new Button("Begin");
-		btBegin.setOnAction(e -> {
-			switch (selectedLevel) {
-				case 1:
-					primaryStage.setScene(levelOneScene);
-					break;
-				case 2:
-					System.out.println("Level 2 is currently unavailable");
-					break;
-				case 3:
-					System.out.println("Level 3 is currently unavailable");
-					break;
-				case 4:
-					System.out.println("Level 4 is currently unavailable");
-					break;
-				case 5:
-					System.out.println("Level 5 is currently unavailable");
-					break;
-				case 6:
-					System.out.println("Level 6 is currently unavailable");
-					break;
-			}
-		});
 		
-		HBox saberSelectButtonBox = new HBox(btBegin);
-		saberSelectButtonBox.setAlignment(Pos.CENTER);
-		
-		saberSelectBorderPane.setBottom(saberSelectButtonBox);
 		
 		// Clear FlowPane
 		saberSelectFlowPane.getChildren().clear();
