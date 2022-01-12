@@ -2,6 +2,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.animation.AnimationTimer;
+import javafx.animation.RotateTransition;
 import javafx.application.*;
 import javafx.geometry.*;
 import javafx.scene.*;
@@ -14,6 +15,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.*;
+import javafx.scene.transform.Translate;
 import javafx.stage.*;
 import javafx.util.Duration;
 
@@ -41,6 +43,8 @@ public class Main extends Application {
 	private int levelWidth;
 	
 	private VBox saberBox;
+
+	private boolean movingRight;
 	
 	private void initContent() throws URISyntaxException {
 		Rectangle background = new Rectangle(1280, 720);
@@ -65,7 +69,7 @@ public class Main extends Application {
 			}
 		}
 		
-		player = createEntity(200, 0, 40, 40, Color.BLUE);
+		player = createEntity(200, 440, 40, 40, Color.BLUE);
 		
 		player.translateXProperty().addListener((obs, old, newValue) -> {
 			int offset = newValue.intValue();
@@ -112,9 +116,11 @@ public class Main extends Application {
 		});
 		hum.play();
 		
-		saberBox.setTranslateX(200);
-		saberBox.setTranslateY(-200);
+		saberBox.setTranslateX(207);
+		saberBox.setTranslateY(315);
 		
+		saberBox.getTransforms().add(new Translate(0, -100));
+
 		gameRoot.getChildren().add(saberBox);
 	}
 	
@@ -133,6 +139,49 @@ public class Main extends Application {
 			saberBox.setScaleX(1);
 		}
 		
+		gameRoot.setOnMouseClicked(e -> {
+			try {
+				MediaPlayer swoosh1 = new MediaPlayer(selectedSaber.getSwoosh1());
+				MediaPlayer swoosh2 = new MediaPlayer(selectedSaber.getSwoosh2());
+				MediaPlayer swoosh3 = new MediaPlayer(selectedSaber.getSwoosh3());
+				
+				// Randomly select 1 of 3 sounds
+				int random = 1 + (int)(Math.random() * ((3 -1) + 1));
+				switch (random) {
+					case 1:
+						swoosh1.play();
+						break;
+					case 2:
+						swoosh2.play();
+						break;
+					case 3:
+						swoosh3.play();
+						break;
+				}
+				
+				if (movingRight) {
+					RotateTransition rt = new RotateTransition(Duration.millis(250), saberBox);
+					rt.setFromAngle(0);
+					rt.setToAngle(165);
+					rt.setCycleCount(2);
+					rt.setAutoReverse(true);
+					rt.play();
+				}
+				else {
+					RotateTransition rt = new RotateTransition(Duration.millis(250), saberBox);
+					rt.setFromAngle(0);
+					rt.setToAngle(-165);
+					rt.setCycleCount(2);
+					rt.setAutoReverse(true);
+					rt.play();
+				}
+				
+				
+			} catch (URISyntaxException e1) {
+				e1.printStackTrace();
+			}
+		});
+		
 		if (playerVelocity.getY() < 10) {
 			playerVelocity = playerVelocity.add(0, 1);
 		}
@@ -142,7 +191,7 @@ public class Main extends Application {
 	
 	// ! FIX THE COLLISION DETECTION !
 	private void movePlayerX(int value) {
-		boolean movingRight = value > 0;
+		movingRight = value > 0;
 		
 		for (int i = 0; i < Math.abs(value); i++) {
 			// Platforms
