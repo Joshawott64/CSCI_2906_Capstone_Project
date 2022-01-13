@@ -13,6 +13,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.*;
 import javafx.scene.transform.Translate;
@@ -31,6 +32,8 @@ public class Main extends Application {
 	private ArrayList<Node> platforms = new ArrayList<Node>();
 	
 	private ArrayList<Node> platformEnds = new ArrayList<Node>();
+	
+	private ArrayList<Node> stormtroopers = new ArrayList<Node>();
 	
 	private Pane appRoot = new Pane();
 	private Pane gameRoot = new Pane();
@@ -58,18 +61,22 @@ public class Main extends Application {
 					case '0':
 						break;
 					case '1':
-						Node platform = createEntity(j*60, i*60, 60, 60, Color.BROWN);
+						Node platform = createEntity(j*60, i*60, 60, 60, Color.BROWN, null);
 						platforms.add(platform);
 						break;
 					case '2':
-						Node platformEnd = createEntity(j*60, i*60, 60, 60, Color.WHITE);
+						Node platformEnd = createEntity(j*60, i*60, 60, 60, Color.PURPLE, null);
 						platformEnds.add(platformEnd);
+						break;
+					case 's':
+						Node stormtrooper = createEntity(j*60, i*60, 60, 60, Color.WHITE, new Image("/Sprites/StockStormtrooper.png"));
+						stormtroopers.add(stormtrooper);
 						break;
 				}
 			}
 		}
 		
-		player = createEntity(200, 440, 40, 40, Color.BLUE);
+		player = createEntity(200, 420, 40, 60, Color.BLUE, new Image("/Sprites/PlayerSprite.png"));
 		
 		player.translateXProperty().addListener((obs, old, newValue) -> {
 			int offset = newValue.intValue();
@@ -89,18 +96,19 @@ public class Main extends Application {
 		
 		appRoot.getChildren().addAll(background, gameRoot, uiRoot);
 		
+		// Add selected saber to gameRoot
 		saberBox = new VBox(-1);
 		ImageView coloredEmitter = new ImageView(selectedSaber.getColoredEmitter());
-		coloredEmitter.setFitWidth(27);
+		coloredEmitter.setFitWidth(13.5);
 		coloredEmitter.setPreserveRatio(true);
 		ImageView guard = new ImageView(selectedSaber.getGuard());
-		guard.setFitWidth(27);
+		guard.setFitWidth(13.5);
 		guard.setPreserveRatio(true);
 		ImageView bladeSwitch = new ImageView(selectedSaber.getBladeSwitch());
-		bladeSwitch.setFitWidth(27);
+		bladeSwitch.setFitWidth(13.5);
 		bladeSwitch.setPreserveRatio(true);
 		ImageView pommel = new ImageView(selectedSaber.getPommel());
-		pommel.setFitWidth(27);
+		pommel.setFitWidth(13.5);
 		pommel.setPreserveRatio(true);
 		saberBox.getChildren().addAll(coloredEmitter, guard, bladeSwitch, pommel);
 		
@@ -116,12 +124,21 @@ public class Main extends Application {
 		});
 		hum.play();
 		
-		saberBox.setTranslateX(207);
-		saberBox.setTranslateY(315);
-		
-		saberBox.getTransforms().add(new Translate(0, -100));
+		saberBox.setTranslateX(210);
+		saberBox.setTranslateY(400);
+		saberBox.getTransforms().add(new Translate(0, -50));
 
 		gameRoot.getChildren().add(saberBox);
+		
+		// Add pause button to uiRoot
+		ImageView pause = new ImageView("/GUI Components/PauseButton.png");
+		
+		pause.setOnMouseClicked(e -> {
+			
+		});
+		
+		uiRoot.getChildren().add(pause);
+		
 	}
 	
 	private void update() {
@@ -132,11 +149,13 @@ public class Main extends Application {
 		if (isPressed(KeyCode.A) && player.getTranslateX() >= 5) {
 			movePlayerX(-5);
 			saberBox.setScaleX(-1);
+			player.setScaleX(-1);
 		}
 		
 		if (isPressed(KeyCode.D) && player.getTranslateX() + 40 <= levelWidth - 5) {
 			movePlayerX(5);
 			saberBox.setScaleX(1);
+			player.setScaleX(1);
 		}
 		
 		gameRoot.setOnMouseClicked(e -> {
@@ -144,6 +163,9 @@ public class Main extends Application {
 				MediaPlayer swoosh1 = new MediaPlayer(selectedSaber.getSwoosh1());
 				MediaPlayer swoosh2 = new MediaPlayer(selectedSaber.getSwoosh2());
 				MediaPlayer swoosh3 = new MediaPlayer(selectedSaber.getSwoosh3());
+				MediaPlayer clash1 = new MediaPlayer(selectedSaber.getClash1());
+				MediaPlayer clash2 = new MediaPlayer(selectedSaber.getClash2());
+				MediaPlayer clash3 = new MediaPlayer(selectedSaber.getClash3());
 				
 				// Randomly select 1 of 3 sounds
 				int random = 1 + (int)(Math.random() * ((3 -1) + 1));
@@ -166,6 +188,24 @@ public class Main extends Application {
 					rt.setCycleCount(2);
 					rt.setAutoReverse(true);
 					rt.play();
+					for (Node stormtrooper : stormtroopers) {
+						if (saberBox.getBoundsInParent().intersects(stormtrooper.getBoundsInParent())) {
+							random = 1 + (int)(Math.random() * ((3 -1) + 1));
+							switch (random) {
+								case 1:
+									clash1.play();
+									break;
+								case 2:
+									clash2.play();
+									break;
+								case 3:
+									clash3.play();
+									break;
+							}
+							stormtroopers.remove(stormtrooper);
+							gameRoot.getChildren().remove(stormtrooper);
+						}
+					}
 				}
 				else {
 					RotateTransition rt = new RotateTransition(Duration.millis(250), saberBox);
@@ -174,6 +214,24 @@ public class Main extends Application {
 					rt.setCycleCount(2);
 					rt.setAutoReverse(true);
 					rt.play();
+					for (Node stormtrooper : stormtroopers) {
+						if (saberBox.getBoundsInParent().intersects(stormtrooper.getBoundsInParent())) {
+							random = 1 + (int)(Math.random() * ((3 -1) + 1));
+							switch (random) {
+								case 1:
+									clash1.play();
+									break;
+								case 2:
+									clash2.play();
+									break;
+								case 3:
+									clash3.play();
+									break;
+							}
+							stormtroopers.remove(stormtrooper);
+							gameRoot.getChildren().remove(stormtrooper);
+						}
+					}
 				}
 				
 				
@@ -238,7 +296,7 @@ public class Main extends Application {
 			for (Node platform : platforms) {
 				if (player.getBoundsInParent().intersects(platform.getBoundsInParent())) {
 					if (movingDown) {
-						if (player.getTranslateY() + 40 == platform.getTranslateY()) {
+						if (player.getTranslateY() + 60 == platform.getTranslateY()) {
 							canJump = true;
 							return;
 						}
@@ -255,7 +313,7 @@ public class Main extends Application {
 			for (Node platformEnd : platformEnds) {
 				if (player.getBoundsInParent().intersects(platformEnd.getBoundsInParent())) {
 					if (movingDown) {
-						if (player.getTranslateY() + 40 == platformEnd.getTranslateY()) {
+						if (player.getTranslateY() + 60 == platformEnd.getTranslateY()) {
 							canJump = true;
 							return;
 						}
@@ -280,12 +338,18 @@ public class Main extends Application {
 		}
 	}
 	
-	private Node createEntity(int x, int y, int w, int h, Color color) {
+	private Node createEntity(int x, int y, int w, int h, Color color, Image graphic) {
 		Rectangle entity = new Rectangle(w, h);
 		entity.setTranslateX(x);
 		entity.setTranslateY(y);
-		entity.setFill(color);
-
+		
+		if (graphic == null) {
+			entity.setFill(color);
+		}
+		else {
+			entity.setFill(new ImagePattern(graphic));
+		}
+		
 		gameRoot.getChildren().add(entity);
 		return entity;
 		
@@ -502,7 +566,7 @@ public class Main extends Application {
 		startFlowPane.setVgap(150);
 		VBox startTitleBox = new VBox();
 		startTitleBox.setAlignment(Pos.CENTER);
-		startTitleBox.getChildren().add(new Text("Select One"));
+		startTitleBox.getChildren().add(new Text(" "));
 		
 		// Navigate to levels
 		Button btLevels = new Button();
@@ -519,7 +583,7 @@ public class Main extends Application {
 		btBack.setGraphic(new ImageView("/GUI Components/BackArrowButton.png"));
 		btBack.setOnAction(e -> primaryStage.setScene(mainMenuScene));
 		
-		VBox startButtonBox = new VBox(40);
+		VBox startButtonBox = new VBox(80);
 		startButtonBox.setAlignment(Pos.CENTER);
 		startButtonBox.getChildren().addAll(btLevels, btSmithy, btBack);
 		
@@ -535,7 +599,7 @@ public class Main extends Application {
 		levelSelectFlowPane.setPadding(new Insets(50, 150, 50, 150));
 		
 		// Level select title
-		HBox levelSelectTitleBox = new HBox(new Text("Select a Level"));
+		HBox levelSelectTitleBox = new HBox(new ImageView("/GUI Components/LevelSelectTitle.png"));
 		levelSelectTitleBox.setAlignment(Pos.CENTER);
 		
 		// Navigate back to start menu
@@ -614,7 +678,7 @@ public class Main extends Application {
 		saberSelectScrollPane.setFitToHeight(true);
 		
 		// Saber select title
-		HBox saberSelectTitleBox = new HBox(new Text("Select a Saber"));
+		HBox saberSelectTitleBox = new HBox(new ImageView("/GUI Components/SaberSelectTitle.png"));
 		saberSelectTitleBox.setAlignment(Pos.CENTER);
 		
 		// Navigate back to level select
@@ -624,7 +688,8 @@ public class Main extends Application {
 		saberSelectButtonBox.setAlignment(Pos.TOP_LEFT);
 		
 		// Begin level
-		Button btBegin = new Button("Begin");
+		Button btBegin = new Button();
+		btBegin.setGraphic(new ImageView("/GUI Components/BeginButton.png"));
 		btBegin.setOnAction(e -> {
 			switch (selectedLevel) {
 				case 1:
