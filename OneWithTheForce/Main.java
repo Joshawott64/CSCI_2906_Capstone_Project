@@ -27,12 +27,11 @@ public class Main extends Application {
 	 * --------------------------
 	 */
 	
+	private Stage gameStage;
+	
 	private HashMap<KeyCode, Boolean> keys = new HashMap<KeyCode, Boolean>();
-	
 	private ArrayList<Node> platforms = new ArrayList<Node>();
-	
 	private ArrayList<Node> platformEnds = new ArrayList<Node>();
-	
 	private ArrayList<Node> stormtroopers = new ArrayList<Node>();
 	
 	private Pane appRoot = new Pane();
@@ -43,11 +42,15 @@ public class Main extends Application {
 	private Point2D playerVelocity = new Point2D(0, 0);
 	private boolean canJump = true;
 	
+	private boolean isSwinging;
+	
 	private int levelWidth;
 	
 	private VBox saberBox;
 
 	private boolean movingRight;
+	
+	private AnimationTimer timer;
 	
 	private void initContent() throws URISyntaxException {
 		Rectangle background = new Rectangle(1280, 720);
@@ -134,11 +137,33 @@ public class Main extends Application {
 		ImageView pause = new ImageView("/GUI Components/PauseButton.png");
 		
 		pause.setOnMouseClicked(e -> {
-			
+			timer.stop();
+			ContextMenu pauseMenu = new ContextMenu();
+			MenuItem resume = new MenuItem("Resume");
+			resume.setOnAction(f -> {
+				pauseMenu.hide();
+				timer.start();
+			});
+			MenuItem quit = new MenuItem("Quit");
+			quit.setOnAction(f -> {
+				gameRoot.getChildren().clear();
+				gameRoot.setLayoutX(0);
+				gameRoot.setLayoutY(0);
+				uiRoot.getChildren().clear();
+				appRoot.getChildren().clear();
+				hum.stop();
+				platforms.clear();
+				platformEnds.clear();
+				stormtroopers.clear();
+				timer.stop();
+				player = null;
+				gameStage.setScene(levelSelectScene);
+			});
+			pauseMenu.getItems().addAll(resume, quit);
+			pauseMenu.show(uiRoot, 640, 360);
 		});
 		
 		uiRoot.getChildren().add(pause);
-		
 	}
 	
 	private void update() {
@@ -158,14 +183,40 @@ public class Main extends Application {
 			player.setScaleX(1);
 		}
 		
+		for (Node stormtrooper : stormtroopers) {
+			if (saberBox.getBoundsInParent().intersects(stormtrooper.getBoundsInParent()) && isSwinging) {
+				try {
+					MediaPlayer clash1 = new MediaPlayer(selectedSaber.getClash1());
+					MediaPlayer clash2 = new MediaPlayer(selectedSaber.getClash2());
+					MediaPlayer clash3 = new MediaPlayer(selectedSaber.getClash3());
+					
+					int random = 1 + (int)(Math.random() * ((3 -1) + 1));
+					switch (random) {
+						case 1:
+							clash1.play();
+							break;
+						case 2:
+							clash2.play();
+							break;
+						case 3:
+							clash3.play();
+							break;
+					}
+					stormtroopers.remove(stormtrooper);
+					gameRoot.getChildren().remove(stormtrooper);
+					
+				} catch (URISyntaxException e1) {
+					e1.printStackTrace();
+				}
+			}
+		}
+		
 		gameRoot.setOnMouseClicked(e -> {
+			isSwinging = true;
 			try {
 				MediaPlayer swoosh1 = new MediaPlayer(selectedSaber.getSwoosh1());
 				MediaPlayer swoosh2 = new MediaPlayer(selectedSaber.getSwoosh2());
 				MediaPlayer swoosh3 = new MediaPlayer(selectedSaber.getSwoosh3());
-				MediaPlayer clash1 = new MediaPlayer(selectedSaber.getClash1());
-				MediaPlayer clash2 = new MediaPlayer(selectedSaber.getClash2());
-				MediaPlayer clash3 = new MediaPlayer(selectedSaber.getClash3());
 				
 				// Randomly select 1 of 3 sounds
 				int random = 1 + (int)(Math.random() * ((3 -1) + 1));
@@ -188,24 +239,7 @@ public class Main extends Application {
 					rt.setCycleCount(2);
 					rt.setAutoReverse(true);
 					rt.play();
-					for (Node stormtrooper : stormtroopers) {
-						if (saberBox.getBoundsInParent().intersects(stormtrooper.getBoundsInParent())) {
-							random = 1 + (int)(Math.random() * ((3 -1) + 1));
-							switch (random) {
-								case 1:
-									clash1.play();
-									break;
-								case 2:
-									clash2.play();
-									break;
-								case 3:
-									clash3.play();
-									break;
-							}
-							stormtroopers.remove(stormtrooper);
-							gameRoot.getChildren().remove(stormtrooper);
-						}
-					}
+					rt.setOnFinished(f -> isSwinging = false);
 				}
 				else {
 					RotateTransition rt = new RotateTransition(Duration.millis(250), saberBox);
@@ -214,27 +248,8 @@ public class Main extends Application {
 					rt.setCycleCount(2);
 					rt.setAutoReverse(true);
 					rt.play();
-					for (Node stormtrooper : stormtroopers) {
-						if (saberBox.getBoundsInParent().intersects(stormtrooper.getBoundsInParent())) {
-							random = 1 + (int)(Math.random() * ((3 -1) + 1));
-							switch (random) {
-								case 1:
-									clash1.play();
-									break;
-								case 2:
-									clash2.play();
-									break;
-								case 3:
-									clash3.play();
-									break;
-							}
-							stormtroopers.remove(stormtrooper);
-							gameRoot.getChildren().remove(stormtrooper);
-						}
-					}
+					rt.setOnFinished(f -> isSwinging = false);
 				}
-				
-				
 			} catch (URISyntaxException e1) {
 				e1.printStackTrace();
 			}
@@ -520,6 +535,7 @@ public class Main extends Application {
 	
 	@Override
 	public void start(Stage primaryStage) throws URISyntaxException {
+		gameStage = primaryStage;
 		// Add default sabers to allSabers
 		allSabers.add(anakinSaber);
 		allSabers.add(ahsokaSaber);
@@ -536,7 +552,10 @@ public class Main extends Application {
 		mainFlowPane.setVgap(150);
 		VBox mainTitleBox = new VBox();
 		mainTitleBox.setAlignment(Pos.CENTER);
-		mainTitleBox.getChildren().add(new Text("One With The Force"));
+		Text mainTitle = new Text("One With The Force");
+		Font mainTitleFont = Font.loadFont(Main.class.getClass().getResourceAsStream("/Fonts/TrajanPro-Regular.ttf"), 40);
+		mainTitle.setFont(mainTitleFont);
+		mainTitleBox.getChildren().add(mainTitle);
 		
 		// Navigate to start
 		Button btStart = new Button();
@@ -698,7 +717,7 @@ public class Main extends Application {
 					} catch (URISyntaxException e1) {
 						e1.printStackTrace();
 					}
-					AnimationTimer timer = new AnimationTimer() {
+					timer = new AnimationTimer() {
 						@Override
 						public void handle(long now) {
 							update();
@@ -746,7 +765,6 @@ public class Main extends Application {
 		 */
 
 		// Create scene
-		
 		levelOneScene = new Scene(appRoot);
 		levelOneScene.setOnKeyPressed(e -> keys.put(e.getCode(), true));
 		levelOneScene.setOnKeyReleased(e -> keys.put(e.getCode(), false));
@@ -1869,8 +1887,6 @@ public class Main extends Application {
 			FlowPane saberSelectFlowPane, int selectedLevel) {
 		// Set stage
 		primaryStage.setScene(saberSelectScene);
-		
-		
 		
 		// Clear FlowPane
 		saberSelectFlowPane.getChildren().clear();
