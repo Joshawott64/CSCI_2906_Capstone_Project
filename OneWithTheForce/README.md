@@ -8,7 +8,7 @@ I built this project in order to push myself as a programmer and game designer.
 
 ## How to Run
 The game requires Main.java, Saber.java, LevelData.java, and every file in the Resources folder to run properly. Main.java is the file that needs to be run.
-<Insert image here>
+[Preview](PreviewImage.png)
   
 ## Code Example
 This code snippet determines what happens to an enemy when the saber collides with them.
